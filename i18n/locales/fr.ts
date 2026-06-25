@@ -9,6 +9,7 @@ const fr = {
     movies: 'Films',
     series: 'Séries',
     genre: 'Par genre',
+    weekly: 'Hebdo',
     stats: 'Stats',
     blog: 'Blog',
     about: 'À propos',

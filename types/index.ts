@@ -44,5 +44,10 @@ export interface StatsData {
   topShows: { title: string; rank: number; voteAverage: number; popularity: number; tmdbId?: number }[];
   topMovieGenres: GenreStat[];
   topShowGenres: GenreStat[];
+  topLanguages: { lang: string; count: number; pct: number }[];
+  yearDistribution: { year: string; count: number; pct: number }[];
+  newThisWeek: number;
+  avgMovieRating: number;
+  avgShowRating: number;
   lastUpdated: string;
 }

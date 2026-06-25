@@ -6,7 +6,7 @@ export const dynamic = 'force-static';
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://trendingshows.com';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const staticRoutes = ['', '/movies', '/series', '/stats', '/blog', '/about', '/contact', '/privacy'].map(route => ({
+  const staticRoutes = ['', '/movies', '/series', '/weekly', '/stats', '/blog', '/about', '/contact', '/privacy'].map(route => ({
     url: `${BASE_URL}${route}`,
     lastModified: new Date(),
     changeFrequency: route === '' ? 'daily' : 'weekly',

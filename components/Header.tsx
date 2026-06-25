@@ -6,9 +6,10 @@ import { useTranslation } from 'react-i18next';
 import { usePathname, useRouter } from 'next/navigation';
 
 const NAV = [
-  { key: 'home',   href: '/',       tKey: 'nav.home' },
-  { key: 'stats',  href: '/stats',  tKey: 'nav.stats' },
-  { key: 'blog',   href: '/blog',   tKey: 'nav.blog' },
+  { key: 'home',   href: '/',        tKey: 'nav.home' },
+  { key: 'weekly', href: '/weekly',  tKey: 'nav.weekly' },
+  { key: 'stats',  href: '/stats',   tKey: 'nav.stats' },
+  { key: 'blog',   href: '/blog',    tKey: 'nav.blog' },
 ] as const;
 
 export default function Header() {
@@ -20,6 +21,7 @@ export default function Header() {
 
   const currentKey = pathname.startsWith('/movies') ? 'movies'
     : pathname.startsWith('/series') ? 'series'
+    : pathname.startsWith('/weekly') ? 'weekly'
     : pathname.startsWith('/stats') ? 'stats'
     : pathname.startsWith('/blog') ? 'blog'
     : 'home';
