@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePathname, useRouter } from 'next/navigation';
-import { useAppStore } from '../store';
 
 const NAV = [
   { key: 'home',   href: '/',       tKey: 'nav.home' },
@@ -13,10 +12,9 @@ const NAV = [
 ] as const;
 
 export default function Header() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const pathname = usePathname();
   const router = useRouter();
-  const { lang, setLang } = useAppStore();
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -37,16 +35,10 @@ export default function Header() {
     return () => document.removeEventListener('mousedown', handleClick);
   }, []);
 
-  function toggleLang() {
-    const next = lang === 'fr' ? 'en' : 'fr';
-    setLang(next);
-    i18n.changeLanguage(next);
-  }
-
   return (
     <div style={{ position: 'sticky', top: 0, zIndex: 100, backgroundColor: '#0F0F0F', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', borderBottom: '1px solid #2A2A2A' }}>
       <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
-        <img src="/icon.png" alt="TrendFlix" style={{ width: 28, height: 28, borderRadius: 6 }} />
+        <img src="/icon.png" alt="TrendingShows" style={{ width: 28, height: 28, borderRadius: 6 }} />
         <span style={{ fontWeight: 700, fontSize: 20, color: '#fff' }}>
           TRENDING<span style={{ fontWeight: 400 }}>Shows</span>
         </span>

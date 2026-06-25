@@ -6,4 +6,5 @@ pages_build_output_dir = ".vercel/output/static"
 [vars]
 NEXT_PUBLIC_API_URL = "https://trendflixbe-production.up.railway.app"
 NEXT_PUBLIC_SITE_URL = "https://trendingshows.com"
+NEXT_PUBLIC_ADMIN_API_KEY = "87553c565c0b13d46ef685a8da3445a50bcde09009947fb051e8018e9a1edec1"
 NODE_VERSION = "22"

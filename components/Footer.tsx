@@ -21,7 +21,7 @@ export default function Footer() {
           </Link>
         ))}
       </div>
-      <span style={{ color: '#AAAAAA', fontSize: 12 }}>© {new Date().getFullYear()} TrendFlix · {t('footer.rights')}</span>
+      <span style={{ color: '#AAAAAA', fontSize: 12 }}>© {new Date().getFullYear()} TrendingShows · {t('footer.rights')}</span>
     </div>
   );
 }
