@@ -1,9 +1,6 @@
-import GenrePage from '../../../../components/GenrePage';
-import { MOVIE_GENRES } from '../../../../constants/config';
+export const runtime = 'edge';
 
-export function generateStaticParams() {
-  return MOVIE_GENRES.map(g => ({ genre: g.slug }));
-}
+import GenrePage from '../../../../components/GenrePage';
 
 interface Props { params: Promise<{ genre: string }> }
 

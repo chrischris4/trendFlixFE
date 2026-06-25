@@ -1,3 +1,5 @@
+export const runtime = 'edge';
+
 import DetailPage from '../../../components/DetailPage';
 import { parseIdFromSlug } from '../../../utils/slug';
 
