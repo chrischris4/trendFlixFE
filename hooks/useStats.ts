@@ -8,6 +8,8 @@ export function useStats() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    setLoading(true);
+    setError(null);
     fetchStats()
       .then(setStats)
       .catch(() => setError('Impossible de charger les statistiques.'))

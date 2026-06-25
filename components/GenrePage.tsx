@@ -18,7 +18,7 @@ export default function GenrePage({ genre, type }: Props) {
   const genreDef = genreList.find(g => g.slug === genre);
 
   const items = useMemo(() => {
-    if (!genreDef) return all;
+    if (!genreDef) return [];
     return all.filter(item => item.genreIds.includes(genreDef.id));
   }, [all, genreDef]);
 

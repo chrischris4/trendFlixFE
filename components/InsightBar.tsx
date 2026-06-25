@@ -63,11 +63,13 @@ export default function InsightBar({ items, type }: Props) {
   const num = (text: string) => <span style={{ color: '#C5001E', fontWeight: 600 }}>{text}</span>;
   const editorial = INSIGHTS[type][isFr ? 'fr' : 'en'];
 
+  const topRating = stats.top.voteAverage != null ? stats.top.voteAverage.toFixed(1) : null;
+
   const insightText = isFr
-    ? <>{hi(`« ${stats.top.title} »`)} est en tête du classement avec {num(`★ ${stats.top.voteAverage?.toFixed(1)}`)}.{' '}
+    ? <>{hi(`« ${stats.top.title} »`)} est en tête du classement{topRating && <> avec {num(`★ ${topRating}`)}</>}.{' '}
         Note moyenne du top {num(`${items.length}`)} : {num(stats.avgVote.toFixed(1))}/10.{' '}
         {stats.topLang && <>Langue dominante : {num(stats.topLang[0].toUpperCase())} ({stats.topLang[1]} titres).</>}</>
-    : <>{hi(`"${stats.top.title}"`)} leads the ranking with {num(`★ ${stats.top.voteAverage?.toFixed(1)}`)}.{' '}
+    : <>{hi(`"${stats.top.title}"`)} leads the ranking{topRating && <> with {num(`★ ${topRating}`)}</>}.{' '}
         Average rating across top {num(`${items.length}`)}: {num(stats.avgVote.toFixed(1))}/10.{' '}
         {stats.topLang && <>Dominant language: {num(stats.topLang[0].toUpperCase())} ({stats.topLang[1]} titles).</>}</>;
 

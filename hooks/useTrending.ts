@@ -10,6 +10,7 @@ export function useTrending(type: 'movie' | 'tv' | 'all' = 'all', limit = 100) {
   useEffect(() => {
     setLoading(true);
     setError(null);
+    setItems([]);
     fetchTrending(type, limit)
       .then(setItems)
       .catch(() => setError('Impossible de charger les données. Vérifie ta connexion.'))

@@ -10,5 +10,6 @@ export function slugify(title: string, id: number): string {
 
 export function parseIdFromSlug(slug: string): number {
   const parts = slug.split('-');
-  return parseInt(parts[parts.length - 1]);
+  const id = parseInt(parts[parts.length - 1], 10);
+  return isNaN(id) ? 0 : id;
 }

@@ -18,12 +18,13 @@ function HomeContent() {
   const searchParams = useSearchParams();
 
   const mediaType: MediaType = searchParams.get('type') === 'tv' ? 'tv' : 'movie';
-  const genreId = searchParams.get('genre') ? Number(searchParams.get('genre')) : null;
+  const genreParam = searchParams.get('genre');
+  const genreId = genreParam !== null ? Number(genreParam) : null;
 
   const { items, loading, error } = useTrending(mediaType, 100);
 
   const filtered = useMemo(() => {
-    if (!genreId) return items;
+    if (genreId === null) return items;
     return items.filter(item => item.genreIds.includes(genreId));
   }, [items, genreId]);
 

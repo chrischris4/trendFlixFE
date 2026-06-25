@@ -208,7 +208,7 @@ export default function DetailPage({ type, id }: Props) {
             </h2>
             <HScrollWithArrows contentContainerStyle={{ gap: 12, paddingBottom: 8 }}>
               {detail.similar.map((item: SimilarItem) => (
-                <Link key={item.tmdbId} href={`/${type === 'movie' ? 'movies' : 'series'}/${slugify(item.title, item.tmdbId)}`} style={{ flexShrink: 0, width: 120, display: 'block' }}>
+                <Link key={item.tmdbId} href={`/${item.type === 'movie' ? 'movies' : 'series'}/${slugify(item.title, item.tmdbId)}`} style={{ flexShrink: 0, width: 120, display: 'block' }}>
                   <div style={{ backgroundColor: '#141414', border: '1px solid #2A2A2A', borderRadius: 8, overflow: 'hidden', transition: 'border-color 160ms' }}
                     onMouseEnter={e => (e.currentTarget as HTMLDivElement).style.borderColor = '#444'}
                     onMouseLeave={e => (e.currentTarget as HTMLDivElement).style.borderColor = '#2A2A2A'}

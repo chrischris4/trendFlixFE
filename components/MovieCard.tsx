@@ -11,7 +11,7 @@ interface Props { item: TrendingItem }
 export default function MovieCard({ item }: Props) {
   const { t } = useTranslation();
   const posterUrl = item.posterPath ? `${TMDB_IMAGE_BASE}${item.posterPath}` : null;
-  const rating = item.voteAverage ? item.voteAverage.toFixed(1) : null;
+  const rating = item.voteAverage != null && item.voteAverage > 0 ? item.voteAverage.toFixed(1) : null;
 
   const href = item.type === 'movie'
     ? `/movies/${slugify(item.title, item.tmdbId)}`
