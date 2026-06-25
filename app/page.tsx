@@ -10,6 +10,7 @@ import TypeFilter from '../components/TypeFilter';
 import GenreFilter from '../components/GenreFilter';
 import InsightBar from '../components/InsightBar';
 import { useTrending } from '../hooks/useTrending';
+import { MOVIE_GENRES, TV_GENRES } from '../constants/config';
 
 type MediaType = 'movie' | 'tv';
 
@@ -17,9 +18,11 @@ function HomeContent() {
   const { t } = useTranslation();
   const searchParams = useSearchParams();
 
-  const mediaType: MediaType = searchParams.get('type') === 'tv' ? 'tv' : 'movie';
-  const genreParam = searchParams.get('genre');
-  const genreId = genreParam !== null ? Number(genreParam) : null;
+  const mediaType: MediaType = searchParams.get('type') === 'series' ? 'tv' : 'movie';
+  const genreSlug = searchParams.get('genre');
+  const genreList = mediaType === 'tv' ? TV_GENRES : MOVIE_GENRES;
+  const genreDef = genreSlug ? (genreList.find(g => g.slug === genreSlug) ?? null) : null;
+  const genreId = genreDef?.id ?? null;
 
   const { items, loading, error } = useTrending(mediaType, 100);
 
@@ -33,8 +36,8 @@ function HomeContent() {
       <div style={{ position: 'sticky', top: 0, zIndex: 100 }}>
         <Header />
         <div className="filter-bar">
-          <TypeFilter selected={mediaType} genreId={genreId} />
-          <GenreFilter mediaType={mediaType} selected={genreId} />
+          <TypeFilter selected={mediaType} genreSlug={genreSlug} />
+          <GenreFilter mediaType={mediaType} selected={genreSlug} />
         </div>
       </div>
 

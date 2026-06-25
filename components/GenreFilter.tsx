@@ -7,16 +7,16 @@ type MediaType = 'movie' | 'tv';
 
 interface Props {
   mediaType: MediaType;
-  selected: number | null;
+  selected: string | null;
 }
 
 export default function GenreFilter({ mediaType, selected }: Props) {
   const genres = mediaType === 'tv' ? TV_GENRES : MOVIE_GENRES;
-  const typeParam = mediaType === 'tv' ? '&type=tv' : '';
+  const typeParam = mediaType === 'tv' ? '&type=series' : '';
 
-  function genreHref(id: number | null) {
-    if (!id) return mediaType === 'tv' ? '/?type=tv' : '/';
-    return `/?genre=${id}${typeParam}`;
+  function genreHref(slug: string | null) {
+    if (!slug) return mediaType === 'tv' ? '/?type=series' : '/';
+    return `/?genre=${slug}${typeParam}`;
   }
 
   const chipActive: React.CSSProperties = { padding: '6px 14px', borderRadius: 20, backgroundColor: '#E8E8E8', color: '#1A1A1A', fontSize: 13, fontWeight: 600, whiteSpace: 'nowrap', textDecoration: 'none', display: 'inline-block' };
@@ -25,8 +25,8 @@ export default function GenreFilter({ mediaType, selected }: Props) {
   const contentStyle: React.CSSProperties = { display: 'flex', gap: 8, padding: '8px 10px', alignItems: 'center' };
   const root: React.CSSProperties = { display: 'flex', alignItems: 'center', backgroundColor: '#0F0F0F' };
 
-  const selectedGenre = selected ? genres.find(g => g.id === selected) : null;
-  const others = genres.filter(g => g.id !== selected);
+  const selectedGenre = selected ? genres.find(g => g.slug === selected) : null;
+  const others = genres.filter(g => g.slug !== selected);
 
   return (
     <div className="genre-filter" style={root}>
@@ -46,7 +46,7 @@ export default function GenreFilter({ mediaType, selected }: Props) {
       )}
       <HScrollWithArrows contentContainerStyle={contentStyle}>
         {others.map(g => (
-          <Link key={g.id} href={genreHref(g.id)} style={chip} className="tab-hover">{g.label}</Link>
+          <Link key={g.id} href={genreHref(g.slug)} style={chip} className="tab-hover">{g.label}</Link>
         ))}
       </HScrollWithArrows>
     </div>

@@ -5,16 +5,16 @@ type MediaType = 'movie' | 'tv';
 
 interface Props {
   selected: MediaType;
-  genreId: number | null;
+  genreSlug: string | null;
 }
 
-export default function TypeFilter({ selected, genreId }: Props) {
+export default function TypeFilter({ selected, genreSlug }: Props) {
   const chipActive: React.CSSProperties = { padding: '6px 20px', borderRadius: 20, backgroundColor: '#E8E8E8', color: '#1A1A1A', fontSize: 13, fontWeight: 600, whiteSpace: 'nowrap', textDecoration: 'none', display: 'inline-block' };
   const chip: React.CSSProperties = { padding: '6px 20px', borderRadius: 20, backgroundColor: '#1A1A1A', color: '#AAAAAA', fontSize: 13, fontWeight: 600, whiteSpace: 'nowrap', textDecoration: 'none', display: 'inline-block', transition: 'background-color 150ms' };
 
   function buildHref(type: MediaType) {
-    if (type === 'movie') return genreId ? `/?genre=${genreId}` : '/';
-    return genreId ? `/?type=tv&genre=${genreId}` : '/?type=tv';
+    if (type === 'movie') return genreSlug ? `/?genre=${genreSlug}` : '/';
+    return genreSlug ? `/?type=series&genre=${genreSlug}` : '/?type=series';
   }
 
   return (
