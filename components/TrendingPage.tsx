@@ -1,0 +1,59 @@
+'use client';
+
+import { useTranslation } from 'react-i18next';
+import Header from './Header';
+import Footer from './Footer';
+import MovieCard from './MovieCard';
+import { useTrending } from '../hooks/useTrending';
+
+interface Props { type: 'movie' | 'tv' }
+
+export default function TrendingPage({ type }: Props) {
+  const { t } = useTranslation();
+  const { items, loading, error } = useTrending(type, 40);
+
+  const title      = type === 'movie' ? t('movies.title')       : t('series.title');
+  const subtitle   = type === 'movie' ? t('movies.subtitle')    : t('series.subtitle');
+  const countLabel = type === 'movie' ? t('movies.count_label') : t('series.count_label');
+
+  return (
+    <div style={{ backgroundColor: '#0F0F0F', minHeight: '100vh' }}>
+      <Header />
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '32px 16px 64px' }}>
+        <h1 style={{ color: '#fff', fontSize: 22, fontWeight: 800, marginBottom: 4 }}>{title}</h1>
+        <p style={{ color: '#888', fontSize: 13, marginBottom: 28, lineHeight: 1.6 }}>{subtitle}</p>
+
+        {!loading && !error && (
+          <div style={{ marginBottom: 20 }}>
+            <span style={{ backgroundColor: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: 20, padding: '4px 14px', fontSize: 12, color: '#AAAAAA' }}>
+              {items.length} {countLabel}
+            </span>
+          </div>
+        )}
+
+        {error && (
+          <div style={{ color: '#C5001E', fontSize: 14, padding: '20px 0' }}>{error}</div>
+        )}
+
+        {loading ? (
+          <div className="grid-cards">
+            {Array.from({ length: 12 }).map((_, i) => (
+              <div key={i}>
+                <div className="skeleton" style={{ aspectRatio: '2/3', borderRadius: 10, marginBottom: 8 }} />
+                <div className="skeleton" style={{ height: 13, borderRadius: 4, marginBottom: 6, width: '80%' }} />
+                <div className="skeleton" style={{ height: 11, borderRadius: 4, width: '40%' }} />
+              </div>
+            ))}
+          </div>
+        ) : items.length === 0 && !error ? (
+          <div style={{ color: '#555', textAlign: 'center', paddingTop: 80 }}>{t('trending.empty')}</div>
+        ) : (
+          <div className="grid-cards">
+            {items.map(item => <MovieCard key={item.id} item={item} />)}
+          </div>
+        )}
+      </div>
+      <Footer />
+    </div>
+  );
+}

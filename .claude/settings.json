@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/jostc/Desktop/trendTubeFE/**)",
+      "Bash(ls \"c:/Users/jostc/Desktop/\")",
+      "Read(//c/Users/jostc/Desktop/**)"
+    ]
+  }
+}
