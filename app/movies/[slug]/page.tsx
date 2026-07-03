@@ -1,13 +1,12 @@
 export const runtime = 'edge';
 
-import dynamic from 'next/dynamic';
+import ClientOnly from '../../../components/ClientOnly';
+import DetailPage from '../../../components/DetailPage';
 import { parseIdFromSlug } from '../../../utils/slug';
-
-const DetailPage = dynamic(() => import('../../../components/DetailPage'), { ssr: false });
 
 interface Props { params: Promise<{ slug: string }> }
 
 export default async function MovieDetailPage({ params }: Props) {
   const { slug } = await params;
-  return <DetailPage type="movie" id={parseIdFromSlug(slug)} />;
+  return <ClientOnly><DetailPage type="movie" id={parseIdFromSlug(slug)} /></ClientOnly>;
 }

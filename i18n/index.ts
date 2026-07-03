@@ -4,7 +4,7 @@ import fr from './locales/fr';
 import en from './locales/en';
 
 if (!i18n.isInitialized) {
-  const deviceLang = typeof navigator !== 'undefined' ? navigator.language.split('-')[0] : 'fr';
+  const deviceLang = typeof navigator !== 'undefined' && navigator.language ? navigator.language.split('-')[0] : 'fr';
   const lng = deviceLang === 'fr' ? 'fr' : 'en';
 
   i18n.use(initReactI18next).init({
