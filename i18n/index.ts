@@ -3,19 +3,26 @@ import { initReactI18next } from 'react-i18next';
 import fr from './locales/fr';
 import en from './locales/en';
 
-if (!i18n.isInitialized) {
-  const deviceLang = typeof navigator !== 'undefined' && navigator.language ? navigator.language.split('-')[0] : 'fr';
-  const lng = deviceLang === 'fr' ? 'fr' : 'en';
+try {
+  if (!i18n.isInitialized) {
+    let lng = 'fr';
+    try {
+      if (typeof navigator !== 'undefined' && typeof navigator.language === 'string' && navigator.language.length > 0) {
+        lng = navigator.language.split('-')[0] === 'fr' ? 'fr' : 'en';
+      }
+    } catch {}
 
-  i18n.use(initReactI18next).init({
-    resources: {
-      fr: { translation: fr },
-      en: { translation: en },
-    },
-    lng,
-    fallbackLng: 'fr',
-    interpolation: { escapeValue: false },
-  });
-}
+    i18n.use(initReactI18next).init({
+      resources: {
+        fr: { translation: fr },
+        en: { translation: en },
+      },
+      lng,
+      fallbackLng: 'fr',
+      interpolation: { escapeValue: false },
+      initImmediate: false,
+    }).catch(() => {});
+  }
+} catch {}
 
 export default i18n;
