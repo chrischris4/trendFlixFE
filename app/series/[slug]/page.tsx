@@ -1,7 +1,9 @@
 export const runtime = 'edge';
 
-import DetailPage from '../../../components/DetailPage';
+import dynamic from 'next/dynamic';
 import { parseIdFromSlug } from '../../../utils/slug';
+
+const DetailPage = dynamic(() => import('../../../components/DetailPage'), { ssr: false });
 
 interface Props { params: Promise<{ slug: string }> }
 

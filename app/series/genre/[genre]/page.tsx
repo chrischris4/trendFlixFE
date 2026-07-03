@@ -1,6 +1,8 @@
 export const runtime = 'edge';
 
-import GenrePage from '../../../../components/GenrePage';
+import dynamic from 'next/dynamic';
+
+const GenrePage = dynamic(() => import('../../../../components/GenrePage'), { ssr: false });
 
 interface Props { params: Promise<{ genre: string }> }
 
