@@ -82,7 +82,6 @@ export default function StatsPage() {
               <StatCard value={`★ ${stats.avgMovieRating}`} label="Note moy. films" />
               <StatCard value={`★ ${stats.avgShowRating}`} label="Note moy. séries" />
               <StatCard value={`+${stats.newThisWeek}`} label="Nouvelles entrées" sub="vs hier" />
-              <StatCard value={t('stats.stat_update')} label={t('stats.stat_update_label')} />
             </div>
 
             {/* Top 5 movies & shows */}
@@ -162,7 +161,7 @@ export default function StatsPage() {
               <div style={{ marginBottom: 40 }}>
                 <h2 style={{ color: '#fff', fontSize: 16, fontWeight: 800, marginBottom: 6 }}>Années de sortie</h2>
                 <p style={{ color: '#555', fontSize: 12, marginBottom: 20 }}>Les contenus tendance sont-ils récents ou des classiques revisités ?</p>
-                <div style={{ display: 'flex', gap: 8, alignItems: 'flex-end', height: 120 }}>
+                <div style={{ display: 'flex', gap: 8, alignItems: 'flex-end', height: 120, paddingTop: 20 }}>
                   {stats.yearDistribution.map(({ year, count, pct }) => (
                     <div key={year} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
                       <span style={{ color: '#888', fontSize: 10 }}>{count}</span>
