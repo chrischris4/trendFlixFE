@@ -10,7 +10,9 @@ import TypeFilter from '../components/TypeFilter';
 import GenreFilter from '../components/GenreFilter';
 import InsightBar from '../components/InsightBar';
 import { useTrending } from '../hooks/useTrending';
-import { MOVIE_GENRES, TV_GENRES } from '../constants/config';
+import { useBlog } from '../hooks/useBlog';
+import { useAppStore } from '../store';
+import { MOVIE_GENRES, TV_GENRES, TMDB_IMAGE_BASE } from '../constants/config';
 
 type MediaType = 'movie' | 'tv';
 
@@ -25,6 +27,14 @@ function HomeContent() {
   const genreId = genreDef?.id ?? null;
 
   const { items, loading, error } = useTrending(mediaType, 100);
+  const { articles } = useBlog();
+  const lang = useAppStore(s => s.lang);
+
+  const featuredArticle = useMemo(() => {
+    const filtered = articles.filter(a => a.type === mediaType);
+    if (filtered.length === 0) return null;
+    return filtered[Math.floor(Math.random() * filtered.length)];
+  }, [articles, mediaType]);
 
   const filtered = useMemo(() => {
     if (genreId === null) return items;
@@ -55,6 +65,35 @@ function HomeContent() {
       )}
 
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '28px 16px 64px' }}>
+        {featuredArticle && (
+          <a href="/blog" style={{ display: 'block', textDecoration: 'none', marginBottom: 24 }}>
+            <div
+              style={{ display: 'flex', gap: 14, alignItems: 'center', backgroundColor: '#141414', border: '1px solid #2A2A2A', borderRadius: 12, padding: '12px 14px', transition: 'border-color 150ms' }}
+              onMouseEnter={e => (e.currentTarget.style.borderColor = '#C5001E')}
+              onMouseLeave={e => (e.currentTarget.style.borderColor = '#2A2A2A')}
+            >
+              {featuredArticle.posterPath && (
+                <img
+                  src={featuredArticle.posterPath.startsWith('http') ? featuredArticle.posterPath : `${TMDB_IMAGE_BASE}${featuredArticle.posterPath}`}
+                  alt={featuredArticle.title}
+                  style={{ width: 54, height: 80, objectFit: 'cover', borderRadius: 6, flexShrink: 0 }}
+                />
+              )}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <span style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1, background: 'linear-gradient(90deg,#C5001E,#E8006A)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                  {lang === 'fr' ? 'Article du blog' : 'Blog post'}
+                </span>
+                <p style={{ color: '#fff', fontSize: 13, fontWeight: 600, margin: '3px 0 4px', lineHeight: 1.3, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical' }}>
+                  {featuredArticle.title}
+                </p>
+                <p style={{ color: '#888', fontSize: 12, margin: 0, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', lineHeight: 1.5 }}>
+                  {lang === 'fr' ? featuredArticle.editorialFr : featuredArticle.editorialEn}
+                </p>
+              </div>
+            </div>
+          </a>
+        )}
+
         {error && <p style={{ color: '#C5001E', fontSize: 14, marginBottom: 20 }}>{error}</p>}
 
         {loading ? (
