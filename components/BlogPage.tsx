@@ -31,42 +31,48 @@ function ArticleCard({ article, isFr, t }: { article: BlogArticle; isFr: boolean
         </span>
       </div>
 
-      {posterUrl && (
-        <div style={{ width: '100%', maxHeight: 220, overflow: 'hidden' }}>
-          <img src={posterUrl} alt={article.title} loading="lazy" style={{ width: '100%', objectFit: 'cover', display: 'block' }} />
-        </div>
-      )}
-
-      <div style={{ padding: '20px 24px 24px' }}>
-        <h2 style={{ color: '#fff', fontSize: 17, fontWeight: 700, margin: '0 0 6px', lineHeight: 1.4 }}>{article.title}</h2>
-        {article.channelTitle && (
-          <p style={{ color: '#AAAAAA', fontSize: 13, margin: '0 0 16px' }}>{article.channelTitle}</p>
+      <div style={{ display: 'flex', gap: 18, padding: '4px 24px 0', alignItems: 'flex-start' }}>
+        {posterUrl && (
+          <img
+            src={posterUrl}
+            alt={article.title}
+            loading="lazy"
+            style={{ width: 130, aspectRatio: '2/3', objectFit: 'cover', borderRadius: 10, flexShrink: 0, border: '1px solid #2A2A2A' }}
+          />
         )}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <h2 style={{ color: '#fff', fontSize: 17, fontWeight: 700, margin: '0 0 6px', lineHeight: 1.4 }}>{article.title}</h2>
+          {article.channelTitle && (
+            <p style={{ color: '#AAAAAA', fontSize: 13, margin: '0 0 16px' }}>{article.channelTitle}</p>
+          )}
 
-        <p style={{ color: '#555', fontSize: 11, margin: '0 0 8px', textTransform: 'uppercase', letterSpacing: 0.5 }}>
-          {t('blog.data_label')}
-        </p>
-        <div style={{ display: 'flex', gap: 10, marginBottom: 16, flexWrap: 'wrap' }}>
-          {article.viewCount != null && (
-            <div style={{ backgroundColor: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: 20, padding: '4px 14px', fontSize: 12, color: '#ddd' }}>
-              <span style={{ color: '#C5001E', fontWeight: 700 }}>{formatViews(Number(article.viewCount))}</span>
-              {' '}{t('blog.views')}
-            </div>
-          )}
-          {article.countryCount != null && (
-            <div style={{ backgroundColor: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: 20, padding: '4px 14px', fontSize: 12, color: '#ddd' }}>
-              {t('blog.trending_in')}{' '}
-              <span style={{ color: '#C5001E', fontWeight: 700 }}>{article.countryCount}</span>
-              {' '}{t('blog.countries')}
-            </div>
-          )}
-          {article.type && (
-            <div style={{ backgroundColor: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: 20, padding: '4px 14px', fontSize: 12, color: '#ddd' }}>
-              {article.type === 'movie' ? t('card.movie') : t('card.tv')}
-            </div>
-          )}
+          <p style={{ color: '#555', fontSize: 11, margin: '0 0 8px', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+            {t('blog.data_label')}
+          </p>
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+            {article.viewCount != null && (
+              <div style={{ backgroundColor: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: 20, padding: '4px 14px', fontSize: 12, color: '#ddd' }}>
+                <span style={{ color: '#C5001E', fontWeight: 700 }}>{formatViews(Number(article.viewCount))}</span>
+                {' '}{t('blog.views')}
+              </div>
+            )}
+            {article.countryCount != null && (
+              <div style={{ backgroundColor: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: 20, padding: '4px 14px', fontSize: 12, color: '#ddd' }}>
+                {t('blog.trending_in')}{' '}
+                <span style={{ color: '#C5001E', fontWeight: 700 }}>{article.countryCount}</span>
+                {' '}{t('blog.countries')}
+              </div>
+            )}
+            {article.type && (
+              <div style={{ backgroundColor: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: 20, padding: '4px 14px', fontSize: 12, color: '#ddd' }}>
+                {article.type === 'movie' ? t('card.movie') : t('card.tv')}
+              </div>
+            )}
+          </div>
         </div>
+      </div>
 
+      <div style={{ padding: '18px 24px 24px' }}>
         <p style={{ color: '#AAAAAA', fontSize: 14, lineHeight: 1.7, margin: 0 }}>
           {isFr ? article.editorialFr : article.editorialEn}
         </p>
@@ -96,19 +102,21 @@ export default function BlogPage() {
               <div className="skeleton" style={{ width: 120, height: 11, borderRadius: 4 }} />
               <div className="skeleton" style={{ width: 80, height: 11, borderRadius: 4 }} />
             </div>
-            <div className="skeleton" style={{ width: '100%', height: 180 }} />
-            <div style={{ padding: '20px 24px 24px', display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <div className="skeleton" style={{ width: '70%', height: 20, borderRadius: 6 }} />
-              <div className="skeleton" style={{ width: '30%', height: 13, borderRadius: 4 }} />
-              <div style={{ display: 'flex', gap: 8, marginTop: 6 }}>
-                <div className="skeleton" style={{ width: 90, height: 26, borderRadius: 20 }} />
-                <div className="skeleton" style={{ width: 110, height: 26, borderRadius: 20 }} />
+            <div style={{ display: 'flex', gap: 18, padding: '4px 24px 0' }}>
+              <div className="skeleton" style={{ width: 130, aspectRatio: '2/3', borderRadius: 10, flexShrink: 0 }} />
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <div className="skeleton" style={{ width: '70%', height: 20, borderRadius: 6 }} />
+                <div className="skeleton" style={{ width: '30%', height: 13, borderRadius: 4 }} />
+                <div style={{ display: 'flex', gap: 8, marginTop: 6 }}>
+                  <div className="skeleton" style={{ width: 90, height: 26, borderRadius: 20 }} />
+                  <div className="skeleton" style={{ width: 110, height: 26, borderRadius: 20 }} />
+                </div>
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 4 }}>
-                <div className="skeleton" style={{ width: '100%', height: 13, borderRadius: 4 }} />
-                <div className="skeleton" style={{ width: '100%', height: 13, borderRadius: 4 }} />
-                <div className="skeleton" style={{ width: '60%', height: 13, borderRadius: 4 }} />
-              </div>
+            </div>
+            <div style={{ padding: '18px 24px 24px', display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <div className="skeleton" style={{ width: '100%', height: 13, borderRadius: 4 }} />
+              <div className="skeleton" style={{ width: '100%', height: 13, borderRadius: 4 }} />
+              <div className="skeleton" style={{ width: '60%', height: 13, borderRadius: 4 }} />
             </div>
           </div>
         )}
