@@ -3,6 +3,8 @@
 import i18n from '../i18n';
 import { useEffect } from 'react';
 import { useAppStore } from '../store';
+import ClientOnly from '../components/ClientOnly';
+import CookieBanner from '../components/CookieBanner';
 
 export default function ClientRoot({ children }: { children: React.ReactNode }) {
   const { setLang } = useAppStore();
@@ -18,5 +20,12 @@ export default function ClientRoot({ children }: { children: React.ReactNode }) 
     } catch {}
   }, []);
 
-  return <>{children}</>;
+  return (
+    <>
+      {children}
+      <ClientOnly>
+        <CookieBanner />
+      </ClientOnly>
+    </>
+  );
 }

@@ -213,6 +213,12 @@ const en = {
     privacy: 'Privacy',
     contact: 'Contact',
   },
+  cookie: {
+    message: 'We use cookies to improve your experience and display ads via Google AdSense.',
+    learn_more: 'Learn more',
+    accept: 'Accept',
+    decline: 'Decline',
+  },
 };
 
 export default en;

@@ -108,3 +108,24 @@ input, textarea, select { font-family: inherit; }
 @media (max-width: 767px) {
   .type-filter-item { flex: 1; }
 }
+
+.cookie-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  background-color: #141414;
+  border-top: 1px solid #2A2A2A;
+  padding: 16px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+@media (min-width: 640px) {
+  .cookie-banner {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
