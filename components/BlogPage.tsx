@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Header from './Header';
 import Footer from './Footer';
@@ -81,11 +82,83 @@ function ArticleCard({ article, isFr, t }: { article: BlogArticle; isFr: boolean
   );
 }
 
+type BlogFilter = 'all' | 'movie' | 'tv';
+
+function FilterBar({
+  active,
+  onChange,
+  counts,
+  t,
+}: {
+  active: BlogFilter;
+  onChange: (f: BlogFilter) => void;
+  counts: { all: number; movie: number; tv: number };
+  t: (k: string) => string;
+}) {
+  const options: { key: BlogFilter; label: string; count: number }[] = [
+    { key: 'all', label: t('blog.filter_all'), count: counts.all },
+    { key: 'movie', label: t('blog.filter_movies'), count: counts.movie },
+    { key: 'tv', label: t('blog.filter_series'), count: counts.tv },
+  ];
+
+  return (
+    <div style={{ display: 'flex', gap: 8, marginBottom: 28, flexWrap: 'wrap' }}>
+      {options.map(opt => {
+        const isActive = active === opt.key;
+        return (
+          <button
+            key={opt.key}
+            type="button"
+            onClick={() => onChange(opt.key)}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 8,
+              cursor: 'pointer',
+              padding: '7px 14px',
+              borderRadius: 20,
+              fontSize: 13,
+              fontWeight: 600,
+              transition: 'all 0.15s ease',
+              color: isActive ? '#fff' : '#AAAAAA',
+              background: isActive ? 'linear-gradient(90deg,#C5001E,#E8006A)' : '#1A1A1A',
+              border: `1px solid ${isActive ? 'transparent' : '#2A2A2A'}`,
+            }}
+          >
+            {opt.label}
+            <span
+              style={{
+                fontSize: 11,
+                fontWeight: 700,
+                lineHeight: 1,
+                padding: '3px 7px',
+                borderRadius: 10,
+                color: isActive ? '#fff' : '#777',
+                backgroundColor: isActive ? 'rgba(255,255,255,0.2)' : '#0F0F0F',
+              }}
+            >
+              {opt.count}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function BlogPage() {
   const { t } = useTranslation();
   const { lang } = useAppStore();
   const isFr = lang === 'fr';
   const { articles, loading, error } = useBlog();
+  const [filter, setFilter] = useState<BlogFilter>('all');
+
+  const counts = {
+    all: articles.length,
+    movie: articles.filter(a => a.type === 'movie').length,
+    tv: articles.filter(a => a.type === 'tv').length,
+  };
+  const filteredArticles = filter === 'all' ? articles : articles.filter(a => a.type === filter);
 
   return (
     <div style={{ backgroundColor: '#0F0F0F', minHeight: '100vh' }}>
@@ -95,6 +168,10 @@ export default function BlogPage() {
         <p style={{ color: '#888', fontSize: 13, marginBottom: 32, lineHeight: 1.6 }}>{t('blog.subtitle')}</p>
 
         {error && <p style={{ color: '#C5001E', fontSize: 14 }}>{error}</p>}
+
+        {!loading && !error && articles.length > 0 && (
+          <FilterBar active={filter} onChange={setFilter} counts={counts} t={t} />
+        )}
 
         {loading && (
           <div style={{ backgroundColor: '#141414', border: '1px solid #2A2A2A', borderRadius: 12, overflow: 'hidden', marginBottom: 32 }}>
@@ -125,11 +202,15 @@ export default function BlogPage() {
           <div style={{ color: '#555', fontSize: 14, textAlign: 'center', paddingTop: 60 }}>{t('blog.no_articles')}</div>
         )}
 
-        {articles.map(article => (
+        {!loading && !error && articles.length > 0 && filteredArticles.length === 0 && (
+          <div style={{ color: '#555', fontSize: 14, textAlign: 'center', padding: '40px 0' }}>{t('blog.no_articles_filter')}</div>
+        )}
+
+        {filteredArticles.map(article => (
           <ArticleCard key={article.id} article={article} isFr={isFr} t={t} />
         ))}
 
-        {!loading && !error && articles.length > 0 && (
+        {!loading && !error && filteredArticles.length > 0 && (
           <div style={{ textAlign: 'center', padding: '12px 24px 20px', backgroundColor: '#141414', border: '1px solid #2A2A2A', borderRadius: 12 }}>
             <span style={{ fontSize: 13, color: '#AAAAAA' }}>{t('blog.coming_soon')}</span>
           </div>

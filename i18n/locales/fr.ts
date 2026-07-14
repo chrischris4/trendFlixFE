@@ -107,6 +107,10 @@ const fr = {
     views: 'vues',
     trending_in: 'Tendance dans',
     countries: 'pays',
+    filter_all: 'Tout',
+    filter_movies: 'Films',
+    filter_series: 'Séries',
+    no_articles_filter: 'Aucun article dans cette catégorie pour l\'instant.',
   },
   about: {
     title: 'À propos de TrendingShows',

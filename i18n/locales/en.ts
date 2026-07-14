@@ -107,6 +107,10 @@ const en = {
     views: 'views',
     trending_in: 'Trending in',
     countries: 'countries',
+    filter_all: 'All',
+    filter_movies: 'Movies',
+    filter_series: 'Series',
+    no_articles_filter: 'No articles in this category yet.',
   },
   about: {
     title: 'About TrendingShows',
