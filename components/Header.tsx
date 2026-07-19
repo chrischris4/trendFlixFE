@@ -53,13 +53,13 @@ export default function Header() {
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
         {/* Autres sites du réseau (tablette + desktop) */}
-        <div className="cross-sites" style={{ alignItems: 'center', gap: 8, marginRight: 4 }}>
+        <div className="cross-sites" style={{ alignItems: 'center', gap: 10, marginRight: 6 }}>
           {CROSS_SITES.map(s => (
             <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" title={s.label}>
               <img
                 src={s.icon}
                 alt={s.label}
-                style={{ width: 26, height: 26, borderRadius: 7, display: 'block', opacity: 0.8, transition: 'opacity 150ms' }}
+                style={{ width: 32, height: 32, borderRadius: 8, display: 'block', opacity: 0.8, transition: 'opacity 150ms' }}
                 onMouseEnter={e => (e.currentTarget.style.opacity = '1')}
                 onMouseLeave={e => (e.currentTarget.style.opacity = '0.8')}
               />
