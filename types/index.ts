@@ -28,6 +28,7 @@ export interface BlogArticle {
   weekOf: string;
   editorialFr: string;
   editorialEn: string;
+  published: boolean;
   createdAt: string;
 }
 

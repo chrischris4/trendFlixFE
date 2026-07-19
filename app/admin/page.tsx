@@ -1,8 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { fetchBlogArticles } from '../../services/api';
-import { createBlogArticle, updateBlogArticle, deleteBlogArticle } from '../../services/admin';
+import { createBlogArticle, updateBlogArticle, deleteBlogArticle, fetchAllBlogArticles } from '../../services/admin';
 import type { BlogArticle } from '../../types';
 
 interface FormData {
@@ -15,11 +14,13 @@ interface FormData {
   weekOf: string;
   editorialFr: string;
   editorialEn: string;
+  published: boolean;
 }
 
 const emptyForm: FormData = {
   tmdbId: '', type: 'movie', title: '', channelTitle: '',
   posterPath: '', viewCount: '', weekOf: '', editorialFr: '', editorialEn: '',
+  published: false,
 };
 
 export default function AdminPage() {
@@ -29,8 +30,8 @@ export default function AdminPage() {
   const [status, setStatus] = useState('');
 
   function load() {
-    fetchBlogArticles()
-      .then(data => setArticles(data.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())))
+    fetchAllBlogArticles()
+      .then(setArticles)
       .catch(() => setStatus('Erreur lors du chargement'));
   }
 
@@ -48,6 +49,7 @@ export default function AdminPage() {
       weekOf: a.weekOf ? a.weekOf.split('T')[0] : '',
       editorialFr: a.editorialFr,
       editorialEn: a.editorialEn,
+      published: a.published,
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -72,13 +74,14 @@ export default function AdminPage() {
         weekOf: form.weekOf || new Date().toISOString().split('T')[0],
         editorialFr: form.editorialFr,
         editorialEn: form.editorialEn,
+        published: form.published,
       };
       if (editingId !== null) {
         await updateBlogArticle(editingId, payload);
         setStatus('Article mis à jour !');
       } else {
         await createBlogArticle(payload as Parameters<typeof createBlogArticle>[0]);
-        setStatus('Article publié !');
+        setStatus('Article enregistré !');
       }
       cancelEdit();
       load();
@@ -158,9 +161,21 @@ export default function AdminPage() {
               <label style={{ fontSize: 12, color: '#888', display: 'block', marginBottom: 4 }}>Editorial EN *</label>
               <textarea required rows={5} style={{ ...inp, resize: 'vertical' }} value={form.editorialEn} onChange={e => setForm(f => ({ ...f, editorialEn: e.target.value }))} />
             </div>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', userSelect: 'none' }}>
+              <input
+                type="checkbox"
+                checked={form.published}
+                onChange={e => setForm(f => ({ ...f, published: e.target.checked }))}
+                style={{ width: 16, height: 16, accentColor: '#e50914', cursor: 'pointer' }}
+              />
+              <span style={{ fontSize: 13, color: '#888' }}>
+                Publier immédiatement
+                <span style={{ color: '#555', fontSize: 12 }}> — décoché : reste en brouillon, publié automatiquement (1 par jour à 11h)</span>
+              </span>
+            </label>
             <div style={{ display: 'flex', gap: 10 }}>
               <button type="submit" style={{ padding: '10px 20px', background: '#e50914', color: '#fff', border: 'none', borderRadius: 6, fontWeight: 700, cursor: 'pointer' }}>
-                {editingId !== null ? 'Mettre à jour' : 'Publier l\'article'}
+                {editingId !== null ? 'Mettre à jour' : form.published ? 'Publier l\'article' : 'Ajouter au brouillon'}
               </button>
               {editingId !== null && (
                 <button type="button" onClick={cancelEdit} style={{ padding: '10px 20px', background: '#333', color: '#ccc', border: '1px solid #444', borderRadius: 6, fontWeight: 700, cursor: 'pointer' }}>
@@ -172,7 +187,9 @@ export default function AdminPage() {
           </form>
         </div>
 
-        <h2 style={{ fontSize: 16, marginBottom: 16 }}>Articles publiés ({articles.length})</h2>
+        <h2 style={{ fontSize: 16, marginBottom: 16 }}>
+          Articles ({articles.filter(a => a.published).length} en ligne · {articles.filter(a => !a.published).length} en attente)
+        </h2>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {articles.map(a => (
             <div key={a.id} style={{
@@ -180,12 +197,27 @@ export default function AdminPage() {
               padding: '14px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12,
             }}>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 2 }}>#{a.id} — {a.title}</div>
+                <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 2, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{
+                    fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 10, flexShrink: 0,
+                    background: a.published ? '#14532d' : '#453306',
+                    color: a.published ? '#4ade80' : '#fbbf24',
+                  }}>
+                    {a.published ? 'En ligne' : 'Brouillon'}
+                  </span>
+                  <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>#{a.id} — {a.title}</span>
+                </div>
                 <div style={{ fontSize: 12, color: '#666' }}>
                   {new Date(a.createdAt).toLocaleDateString('fr-FR')} · {a.type ?? '—'}
                 </div>
               </div>
               <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
+                <button
+                  onClick={async () => { try { await updateBlogArticle(a.id, { published: !a.published }); load(); } catch { setStatus('Erreur lors du changement de statut'); } }}
+                  style={{ padding: '6px 14px', background: '#1e293b', color: a.published ? '#fbbf24' : '#4ade80', border: '1px solid #334155', borderRadius: 6, fontSize: 12, fontWeight: 700, cursor: 'pointer' }}
+                >
+                  {a.published ? 'Dépublier' : 'Publier'}
+                </button>
                 <button onClick={() => startEdit(a)} style={{ padding: '6px 14px', background: '#166534', color: '#4ade80', border: '1px solid #166534', borderRadius: 6, fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
                   Éditer
                 </button>
