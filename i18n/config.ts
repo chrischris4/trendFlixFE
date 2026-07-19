@@ -1,17 +1,7 @@
 'use client';
 
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
-import fr from './locales/fr';
-import en from './locales/en';
-
-if (!i18n.isInitialized) {
-  i18n.use(initReactI18next).init({
-    resources: { fr: { translation: fr }, en: { translation: en } },
-    lng: 'fr',
-    fallbackLng: 'en',
-    interpolation: { escapeValue: false },
-  });
-}
+// Point d'entrée unique : la détection de langue (navigateur) vit dans ./index.
+// Ce fichier ne fait que réexporter pour les pages qui l'importent en side-effect.
+import i18n from './index';
 
 export default i18n;

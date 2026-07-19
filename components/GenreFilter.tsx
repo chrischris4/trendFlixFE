@@ -1,7 +1,8 @@
 'use client';
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 import HScrollWithArrows from './HScrollWithArrows';
-import { MOVIE_GENRES, TV_GENRES } from '../constants/config';
+import { MOVIE_GENRES, TV_GENRES, genreLabel } from '../constants/config';
 
 type MediaType = 'movie' | 'tv';
 
@@ -11,6 +12,9 @@ interface Props {
 }
 
 export default function GenreFilter({ mediaType, selected }: Props) {
+  const { i18n } = useTranslation();
+  const isFr = i18n.language === 'fr';
+  const allLabel = isFr ? 'Tous' : 'All';
   const genres = mediaType === 'tv' ? TV_GENRES : MOVIE_GENRES;
   const typeParam = mediaType === 'tv' ? '&type=series' : '';
 
@@ -32,21 +36,21 @@ export default function GenreFilter({ mediaType, selected }: Props) {
     <div className="genre-filter" style={root}>
       <div style={{ display: 'flex', alignItems: 'center', paddingLeft: 12, flexShrink: 0 }}>
         {!selected ? (
-          <span style={chipActive}>Tous</span>
+          <span style={chipActive}>{allLabel}</span>
         ) : (
-          <Link href={genreHref(null)} style={chip} className="tab-hover">Tous</Link>
+          <Link href={genreHref(null)} style={chip} className="tab-hover">{allLabel}</Link>
         )}
         <div style={sep} />
       </div>
       {selectedGenre && (
         <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
-          <span style={{ ...chipActive, marginLeft: 8 }}>{selectedGenre.label}</span>
+          <span style={{ ...chipActive, marginLeft: 8 }}>{genreLabel(selectedGenre, i18n.language)}</span>
           <div style={sep} />
         </div>
       )}
       <HScrollWithArrows contentContainerStyle={contentStyle}>
         {others.map(g => (
-          <Link key={g.id} href={genreHref(g.slug)} style={chip} className="tab-hover">{g.label}</Link>
+          <Link key={g.id} href={genreHref(g.slug)} style={chip} className="tab-hover">{genreLabel(g, i18n.language)}</Link>
         ))}
       </HScrollWithArrows>
     </div>

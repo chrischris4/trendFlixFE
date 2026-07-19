@@ -5,13 +5,13 @@ import { useTranslation } from 'react-i18next';
 import Header from './Header';
 import Footer from './Footer';
 import MovieCard from './MovieCard';
-import { MOVIE_GENRES, TV_GENRES } from '../constants/config';
+import { MOVIE_GENRES, TV_GENRES, genreLabel as genreName } from '../constants/config';
 import { useTrending } from '../hooks/useTrending';
 
 interface Props { genre: string; type: 'movie' | 'tv' }
 
 export default function GenrePage({ genre, type }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { items: all, loading, error } = useTrending(type, 40);
 
   const genreList = type === 'movie' ? MOVIE_GENRES : TV_GENRES;
@@ -22,10 +22,10 @@ export default function GenrePage({ genre, type }: Props) {
     return all.filter(item => item.genreIds.includes(genreDef.id));
   }, [all, genreDef]);
 
-  const genreLabel = genreDef ? `${genreDef.emoji} ${genreDef.label}` : genre;
+  const label = genreDef ? `${genreDef.emoji} ${genreName(genreDef, i18n.language)}` : genre;
   const title = type === 'movie'
-    ? t('genre.movies_title', { genre: genreLabel })
-    : t('genre.series_title', { genre: genreLabel });
+    ? t('genre.movies_title', { genre: label })
+    : t('genre.series_title', { genre: label });
 
   return (
     <div style={{ backgroundColor: '#0F0F0F', minHeight: '100vh' }}>

@@ -5,14 +5,19 @@ import Link from 'next/link';
 import Header from './Header';
 import Footer from './Footer';
 import { useStats } from '../hooks/useStats';
-import { MOVIE_GENRES, TV_GENRES } from '../constants/config';
+import { MOVIE_GENRES, TV_GENRES, genreLabel } from '../constants/config';
 import { slugify } from '../utils/slug';
 import type { GenreStat } from '../types';
 
-const LANG_NAMES: Record<string, string> = {
+const LANG_NAMES_FR: Record<string, string> = {
   en: 'Anglais', fr: 'Français', ko: 'Coréen', ja: 'Japonais', es: 'Espagnol',
   hi: 'Hindi', zh: 'Chinois', de: 'Allemand', it: 'Italien', pt: 'Portugais',
   ru: 'Russe', ar: 'Arabe', tr: 'Turc', th: 'Thaï', pl: 'Polonais',
+};
+const LANG_NAMES_EN: Record<string, string> = {
+  en: 'English', fr: 'French', ko: 'Korean', ja: 'Japanese', es: 'Spanish',
+  hi: 'Hindi', zh: 'Chinese', de: 'German', it: 'Italian', pt: 'Portuguese',
+  ru: 'Russian', ar: 'Arabic', tr: 'Turkish', th: 'Thai', pl: 'Polish',
 };
 
 function Bar({ pct, color = 'linear-gradient(90deg,#C5001E,#E8006A)' }: { pct: number; color?: string }) {
@@ -23,7 +28,7 @@ function Bar({ pct, color = 'linear-gradient(90deg,#C5001E,#E8006A)' }: { pct: n
   );
 }
 
-function GenreBar({ genreId, count, pct, label }: GenreStat & { label: string }) {
+function GenreBar({ count, pct, label }: Pick<GenreStat, 'count' | 'pct'> & { label: string }) {
   return (
     <div style={{ marginBottom: 10 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, fontSize: 12 }}>
@@ -48,11 +53,16 @@ function StatCard({ value, label, sub }: { value: string | number; label: string
 }
 
 export default function StatsPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isFr = i18n.language === 'fr';
+  const lang = isFr ? 'fr' : 'en';
+  const LANG_NAMES = isFr ? LANG_NAMES_FR : LANG_NAMES_EN;
   const { stats, loading, error } = useStats();
 
-  const resolveGenre = (list: typeof MOVIE_GENRES | typeof TV_GENRES, id: number) =>
-    (list as unknown as { id: number; label: string }[]).find(g => g.id === id)?.label ?? `Genre ${id}`;
+  const resolveGenre = (list: typeof MOVIE_GENRES | typeof TV_GENRES, id: number) => {
+    const def = (list as unknown as { id: number; label: string; labelEn: string }[]).find(g => g.id === id);
+    return def ? genreLabel(def, lang) : `Genre ${id}`;
+  };
 
   const cardStyle: React.CSSProperties = {
     display: 'flex', alignItems: 'center', gap: 12,
@@ -79,9 +89,9 @@ export default function StatsPage() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 12, marginBottom: 40 }}>
               <StatCard value={stats.movies} label={t('stats.total_movies')} />
               <StatCard value={stats.shows} label={t('stats.total_shows')} />
-              <StatCard value={`★ ${stats.avgMovieRating}`} label="Note moy. films" />
-              <StatCard value={`★ ${stats.avgShowRating}`} label="Note moy. séries" />
-              <StatCard value={`+${stats.newThisWeek}`} label="Nouvelles entrées" sub="vs hier" />
+              <StatCard value={`★ ${stats.avgMovieRating}`} label={isFr ? 'Note moy. films' : 'Avg. movie rating'} />
+              <StatCard value={`★ ${stats.avgShowRating}`} label={isFr ? 'Note moy. séries' : 'Avg. show rating'} />
+              <StatCard value={`+${stats.newThisWeek}`} label={isFr ? 'Nouvelles entrées' : 'New entries'} sub={isFr ? 'vs hier' : 'vs yesterday'} />
             </div>
 
             {/* Top 5 movies & shows */}
@@ -118,19 +128,19 @@ export default function StatsPage() {
             {/* Top genres */}
             {(stats.topMovieGenres?.length > 0 || stats.topShowGenres?.length > 0) && (
               <div style={{ marginBottom: 40 }}>
-                <h2 style={{ color: '#fff', fontSize: 16, fontWeight: 800, marginBottom: 6 }}>Top catégories</h2>
-                <p style={{ color: '#555', fontSize: 12, marginBottom: 24 }}>Distribution des genres parmi les titres tendance actuels.</p>
+                <h2 style={{ color: '#fff', fontSize: 16, fontWeight: 800, marginBottom: 6 }}>{t('stats.top_genres')}</h2>
+                <p style={{ color: '#555', fontSize: 12, marginBottom: 24 }}>{t('stats.top_genres_sub')}</p>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 32 }}>
                   {stats.topMovieGenres?.length > 0 && (
                     <div>
                       <h3 style={{ color: '#AAAAAA', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 16 }}>{t('stats.movies_label')}</h3>
-                      {stats.topMovieGenres.map(g => <GenreBar key={g.genreId} {...g} label={resolveGenre(MOVIE_GENRES, g.genreId)} />)}
+                      {stats.topMovieGenres.map(g => <GenreBar key={g.genreId} count={g.count} pct={g.pct} label={resolveGenre(MOVIE_GENRES, g.genreId)} />)}
                     </div>
                   )}
                   {stats.topShowGenres?.length > 0 && (
                     <div>
                       <h3 style={{ color: '#AAAAAA', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 16 }}>{t('stats.shows_label')}</h3>
-                      {stats.topShowGenres.map(g => <GenreBar key={g.genreId} {...g} label={resolveGenre(TV_GENRES, g.genreId)} />)}
+                      {stats.topShowGenres.map(g => <GenreBar key={g.genreId} count={g.count} pct={g.pct} label={resolveGenre(TV_GENRES, g.genreId)} />)}
                     </div>
                   )}
                 </div>
@@ -140,14 +150,16 @@ export default function StatsPage() {
             {/* Languages */}
             {stats.topLanguages?.length > 0 && (
               <div style={{ marginBottom: 40 }}>
-                <h2 style={{ color: '#fff', fontSize: 16, fontWeight: 800, marginBottom: 6 }}>Langues d'origine</h2>
-                <p style={{ color: '#555', fontSize: 12, marginBottom: 20 }}>Répartition linguistique des contenus tendance cette semaine.</p>
+                <h2 style={{ color: '#fff', fontSize: 16, fontWeight: 800, marginBottom: 6 }}>{isFr ? "Langues d'origine" : 'Original languages'}</h2>
+                <p style={{ color: '#555', fontSize: 12, marginBottom: 20 }}>
+                  {isFr ? 'Répartition linguistique des contenus tendance cette semaine.' : 'Language distribution of this week\'s trending content.'}
+                </p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  {stats.topLanguages.map(({ lang, count, pct }) => (
-                    <div key={lang}>
+                  {stats.topLanguages.map(({ lang: l, count, pct }) => (
+                    <div key={l}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, fontSize: 12 }}>
-                        <span style={{ color: '#ddd', fontWeight: 600 }}>{LANG_NAMES[lang] ?? lang.toUpperCase()}</span>
-                        <span style={{ color: '#888' }}>{count} titre{count > 1 ? 's' : ''} · {pct}%</span>
+                        <span style={{ color: '#ddd', fontWeight: 600 }}>{LANG_NAMES[l] ?? l.toUpperCase()}</span>
+                        <span style={{ color: '#888' }}>{count} {isFr ? (count > 1 ? 'titres' : 'titre') : (count > 1 ? 'titles' : 'title')} · {pct}%</span>
                       </div>
                       <Bar pct={pct} color="linear-gradient(90deg,#1d6fa4,#3ab0e8)" />
                     </div>
@@ -159,8 +171,10 @@ export default function StatsPage() {
             {/* Year distribution */}
             {stats.yearDistribution?.length > 0 && (
               <div style={{ marginBottom: 40 }}>
-                <h2 style={{ color: '#fff', fontSize: 16, fontWeight: 800, marginBottom: 6 }}>Années de sortie</h2>
-                <p style={{ color: '#555', fontSize: 12, marginBottom: 20 }}>Les contenus tendance sont-ils récents ou des classiques revisités ?</p>
+                <h2 style={{ color: '#fff', fontSize: 16, fontWeight: 800, marginBottom: 6 }}>{isFr ? 'Années de sortie' : 'Release years'}</h2>
+                <p style={{ color: '#555', fontSize: 12, marginBottom: 20 }}>
+                  {isFr ? 'Les contenus tendance sont-ils récents ou des classiques revisités ?' : 'Are trending titles brand new or revisited classics?'}
+                </p>
                 <div style={{ display: 'flex', gap: 8, alignItems: 'flex-end', height: 120, paddingTop: 20 }}>
                   {stats.yearDistribution.map(({ year, count, pct }) => (
                     <div key={year} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
@@ -175,7 +189,7 @@ export default function StatsPage() {
 
             {/* Last updated */}
             <p style={{ color: '#333', fontSize: 11, textAlign: 'center' }}>
-              Dernière mise à jour : {new Date(stats.lastUpdated).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+              {isFr ? 'Dernière mise à jour' : 'Last updated'} : {new Date(stats.lastUpdated).toLocaleDateString(isFr ? 'fr-FR' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
             </p>
           </>
         ) : null}

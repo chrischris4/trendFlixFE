@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MOVIE_GENRES, TV_GENRES } from '../constants/config';
+import { MOVIE_GENRES, TV_GENRES, genreLabel } from '../constants/config';
 import type { TrendingItem } from '../types';
 
 interface Props {
@@ -24,6 +24,7 @@ const INSIGHTS: Record<'movie' | 'tv', { fr: string; en: string }> = {
 export default function InsightBar({ items, type }: Props) {
   const { i18n } = useTranslation();
   const isFr = i18n.language === 'fr';
+  const lang = isFr ? 'fr' : 'en';
 
   const stats = useMemo(() => {
     if (items.length === 0) return null;
@@ -43,8 +44,8 @@ export default function InsightBar({ items, type }: Props) {
       .sort((a, b) => b[1] - a[1])
       .slice(0, 3)
       .map(([id, count]) => {
-        const def = genreList.find(g => g.id === id);
-        return { name: def?.label ?? id, pct: Math.round((count / items.length) * 100) };
+        const def = (genreList as unknown as { id: number; label: string; labelEn: string }[]).find(g => g.id === id);
+        return { id, def, count, pct: Math.round((count / items.length) * 100) };
       });
 
     // Most represented original language
@@ -61,7 +62,7 @@ export default function InsightBar({ items, type }: Props) {
 
   const hi = (text: string) => <span style={{ color: '#ddd', fontWeight: 500 }}>{text}</span>;
   const num = (text: string) => <span style={{ color: '#C5001E', fontWeight: 600 }}>{text}</span>;
-  const editorial = INSIGHTS[type][isFr ? 'fr' : 'en'];
+  const editorial = INSIGHTS[type][lang];
 
   const topRating = stats.top.voteAverage != null ? stats.top.voteAverage.toFixed(1) : null;
 
@@ -84,9 +85,9 @@ export default function InsightBar({ items, type }: Props) {
       {stats.topGenres.length > 0 && (
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 10 }}>
           {stats.topGenres.map((g, i) => (
-            <div key={g.name} style={{ display: 'flex', alignItems: 'center', gap: 6, backgroundColor: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: 20, padding: '4px 12px' }}>
+            <div key={g.id} style={{ display: 'flex', alignItems: 'center', gap: 6, backgroundColor: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: 20, padding: '4px 12px' }}>
               <span style={{ color: '#C5001E', fontWeight: 700, fontSize: 12 }}>#{i + 1}</span>
-              <span style={{ color: '#ddd', fontSize: 12, fontWeight: 600 }}>{g.name}</span>
+              <span style={{ color: '#ddd', fontSize: 12, fontWeight: 600 }}>{g.def ? genreLabel(g.def, lang) : g.id}</span>
               <span style={{ color: '#555', fontSize: 11 }}>{g.pct}%</span>
             </div>
           ))}
