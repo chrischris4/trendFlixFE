@@ -129,3 +129,9 @@ input, textarea, select { font-family: inherit; }
     justify-content: space-between;
   }
 }
+
+/* Liens croisés vers les autres sites : icônes dès la tablette, entrées de menu sur mobile */
+.cross-sites { display: none; }
+@media (min-width: 768px) { .cross-sites { display: flex; } }
+.cross-sites-mobile { display: block; }
+@media (min-width: 768px) { .cross-sites-mobile { display: none; } }

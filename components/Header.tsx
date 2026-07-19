@@ -12,6 +12,11 @@ const NAV = [
   { key: 'blog',   href: '/blog',    tKey: 'nav.blog' },
 ] as const;
 
+const CROSS_SITES = [
+  { href: 'https://trend-tube.com',  icon: 'https://trend-tube.com/icon.png',  label: 'TrendTube' },
+  { href: 'https://trend-songs.com', icon: 'https://trend-songs.com/icon.png', label: 'TrendSongs' },
+] as const;
+
 export default function Header() {
   const { t } = useTranslation();
   const pathname = usePathname();
@@ -66,6 +71,21 @@ export default function Header() {
           ))}
         </div>
 
+        {/* Autres sites du réseau (tablette + desktop) */}
+        <div className="cross-sites" style={{ alignItems: 'center', gap: 8 }}>
+          {CROSS_SITES.map(s => (
+            <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" title={s.label}>
+              <img
+                src={s.icon}
+                alt={s.label}
+                style={{ width: 26, height: 26, borderRadius: 7, display: 'block', opacity: 0.8, transition: 'opacity 150ms' }}
+                onMouseEnter={e => (e.currentTarget.style.opacity = '1')}
+                onMouseLeave={e => (e.currentTarget.style.opacity = '0.8')}
+              />
+            </a>
+          ))}
+        </div>
+
         {/* Mobile dropdown */}
         <div className="nav-mobile" ref={dropdownRef} style={{ position: 'relative' }}>
           <button
@@ -108,6 +128,21 @@ export default function Header() {
                   )}
                 </button>
               ))}
+              {/* Autres sites du réseau (mobile uniquement) */}
+              <div className="cross-sites-mobile">
+                {CROSS_SITES.map(s => (
+                  <a
+                    key={s.label}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 18px', borderTop: '1px solid #2A2A2A', color: '#AAAAAA', fontSize: 14, fontWeight: 500, textDecoration: 'none' }}
+                  >
+                    <img src={s.icon} alt={s.label} style={{ width: 20, height: 20, borderRadius: 5 }} />
+                    {s.label}
+                  </a>
+                ))}
+              </div>
             </div>
           )}
         </div>
