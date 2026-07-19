@@ -1,11 +1,13 @@
 import type { MetadataRoute } from 'next';
 import { MOVIE_GENRES, TV_GENRES } from '../constants/config';
+import { slugify } from '../utils/slug';
 
-export const dynamic = 'force-static';
+export const runtime = 'edge';
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://trendingshows.com';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'https://trendflixbe-production.up.railway.app';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes = ['', '/movies', '/series', '/weekly', '/stats', '/blog', '/about', '/contact', '/privacy'].map(route => ({
     url: `${BASE_URL}${route}`,
     lastModified: new Date(),
@@ -27,5 +29,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   }));
 
-  return [...staticRoutes, ...movieGenreRoutes, ...tvGenreRoutes];
+  // Articles publiés : une URL par article, ajoutée au fil des publications du cron
+  let blogRoutes: MetadataRoute.Sitemap = [];
+  try {
+    const res = await fetch(`${API_BASE}/blog`, { cache: 'no-store' });
+    if (res.ok) {
+      const articles: { id: number; title: string; createdAt: string }[] = await res.json();
+      blogRoutes = articles.map(a => ({
+        url: `${BASE_URL}/blog/${slugify(a.title, a.id)}`,
+        lastModified: new Date(a.createdAt),
+        changeFrequency: 'monthly' as const,
+        priority: 0.7,
+      }));
+    }
+  } catch {
+    // API indisponible : le sitemap reste valide sans les articles
+  }
+
+  return [...staticRoutes, ...movieGenreRoutes, ...tvGenreRoutes, ...blogRoutes];
 }

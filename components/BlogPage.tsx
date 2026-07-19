@@ -1,12 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import Header from './Header';
 import Footer from './Footer';
 import { useBlog } from '../hooks/useBlog';
 import { useAppStore } from '../store';
 import { TMDB_IMAGE_BASE } from '../constants/config';
+import { slugify } from '../utils/slug';
 import type { BlogArticle } from '../types';
 
 function formatViews(n: number): string {
@@ -42,7 +44,15 @@ function ArticleCard({ article, isFr, t }: { article: BlogArticle; isFr: boolean
           />
         )}
         <div style={{ flex: 1, minWidth: 0 }}>
-          <h2 style={{ color: '#fff', fontSize: 17, fontWeight: 700, margin: '0 0 6px', lineHeight: 1.4 }}>{article.title}</h2>
+          <Link href={`/blog/${slugify(article.title, article.id)}`} style={{ textDecoration: 'none' }}>
+            <h2
+              style={{ color: '#fff', fontSize: 17, fontWeight: 700, margin: '0 0 6px', lineHeight: 1.4, transition: 'color 150ms' }}
+              onMouseEnter={e => (e.currentTarget.style.color = '#FF5599')}
+              onMouseLeave={e => (e.currentTarget.style.color = '#fff')}
+            >
+              {article.title}
+            </h2>
+          </Link>
           {article.channelTitle && (
             <p style={{ color: '#AAAAAA', fontSize: 13, margin: '0 0 16px' }}>{article.channelTitle}</p>
           )}
@@ -77,6 +87,9 @@ function ArticleCard({ article, isFr, t }: { article: BlogArticle; isFr: boolean
         <p style={{ color: '#AAAAAA', fontSize: 14, lineHeight: 1.7, margin: 0 }}>
           {isFr ? article.editorialFr : article.editorialEn}
         </p>
+        <Link href={`/blog/${slugify(article.title, article.id)}`} style={{ display: 'inline-block', marginTop: 12, color: '#FF5599', fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>
+          {t('blog.read_more')} →
+        </Link>
       </div>
     </div>
   );
