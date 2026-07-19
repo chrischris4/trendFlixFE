@@ -52,6 +52,21 @@ export default function Header() {
       </Link>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        {/* Autres sites du réseau (tablette + desktop) */}
+        <div className="cross-sites" style={{ alignItems: 'center', gap: 8, marginRight: 4 }}>
+          {CROSS_SITES.map(s => (
+            <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" title={s.label}>
+              <img
+                src={s.icon}
+                alt={s.label}
+                style={{ width: 26, height: 26, borderRadius: 7, display: 'block', opacity: 0.8, transition: 'opacity 150ms' }}
+                onMouseEnter={e => (e.currentTarget.style.opacity = '1')}
+                onMouseLeave={e => (e.currentTarget.style.opacity = '0.8')}
+              />
+            </a>
+          ))}
+        </div>
+
         {/* Desktop nav pills */}
         <div className="nav-desktop" style={{ gap: 4, backgroundColor: '#1A1A1A', borderRadius: 24, padding: 3, border: '1px solid #2A2A2A' }}>
           {views.map(v => (
@@ -68,21 +83,6 @@ export default function Header() {
             >
               {v.label}
             </button>
-          ))}
-        </div>
-
-        {/* Autres sites du réseau (tablette + desktop) */}
-        <div className="cross-sites" style={{ alignItems: 'center', gap: 8 }}>
-          {CROSS_SITES.map(s => (
-            <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" title={s.label}>
-              <img
-                src={s.icon}
-                alt={s.label}
-                style={{ width: 26, height: 26, borderRadius: 7, display: 'block', opacity: 0.8, transition: 'opacity 150ms' }}
-                onMouseEnter={e => (e.currentTarget.style.opacity = '1')}
-                onMouseLeave={e => (e.currentTarget.style.opacity = '0.8')}
-              />
-            </a>
           ))}
         </div>
 
