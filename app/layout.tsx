@@ -3,6 +3,8 @@ import './globals.css';
 import ClientRoot from './ClientRoot';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://trendingshows.com'),
+  alternates: { canonical: './' },
   title: { default: 'TrendingShows - #1 Trending Movies & TV Shows Worldwide', template: '%s | TrendingShows' },
   description: 'Discover what the world is watching right now. TrendingShows ranks the most popular movies and TV shows worldwide, updated daily from global streaming data.',
   keywords: ['trending shows', 'trending movies', 'most popular TV shows', 'top movies right now', 'what to watch', 'best movies 2027', 'best TV shows 2027', 'worldwide trending', 'TMDB trending', 'TrendingShows'],
@@ -32,6 +34,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <head>
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8982511031951947" crossOrigin="anonymous" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'WebSite',
+            name: 'TrendingShows',
+            url: 'https://trendingshows.com',
+            description: 'Discover what the world is watching right now. Trending movies and TV shows worldwide, updated daily.',
+          }) }}
+        />
       </head>
       <body>
         <ClientRoot>{children}</ClientRoot>
