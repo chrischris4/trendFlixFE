@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import Header from './Header';
 import Footer from './Footer';
 import MovieCard from './MovieCard';
+import EditorialSection from './EditorialSection';
 import { useTrending } from '../hooks/useTrending';
 import { useBlog } from '../hooks/useBlog';
 import { useAppStore } from '../store';
@@ -94,6 +95,7 @@ export default function TrendingPage({ type }: Props) {
           </div>
         )}
       </div>
+      <EditorialSection page={type === 'movie' ? 'movies' : 'series'} />
       <Footer />
     </div>
   );
