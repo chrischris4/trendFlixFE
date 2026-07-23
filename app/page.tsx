@@ -15,7 +15,9 @@ import { useTrending } from '../hooks/useTrending';
 import { useBlog } from '../hooks/useBlog';
 import { useAppStore } from '../store';
 import { MOVIE_GENRES, TV_GENRES, TMDB_IMAGE_BASE } from '../constants/config';
-import { articleExcerpt, articleTitle, heroItem } from '../utils/blog';
+import { articleExcerpt, articleTitle, formatLabel, heroItem } from '../utils/blog';
+import { slugify } from '../utils/slug';
+import type { BlogArticle } from '../types';
 
 type MediaType = 'movie' | 'tv';
 
@@ -34,14 +36,13 @@ function HomeContent() {
   const lang = useAppStore(s => s.lang);
   const isFr = lang === 'fr';
 
-  const featuredArticle = useMemo(() => {
+  const featuredArticles = useMemo(() => {
     const filtered = articles.filter(a => a.type === mediaType);
-    if (filtered.length === 0) return null;
-    return filtered[Math.floor(Math.random() * filtered.length)];
+    return [
+      filtered.find(article => (article.format ?? 'SIMPLE') === 'SIMPLE'),
+      filtered.find(article => (article.format ?? 'SIMPLE') !== 'SIMPLE'),
+    ].filter((article): article is BlogArticle => article !== undefined);
   }, [articles, mediaType]);
-  const featuredHero = featuredArticle ? heroItem(featuredArticle) : undefined;
-  const featuredPoster = featuredHero?.posterPath ?? featuredArticle?.posterPath;
-  const featuredTitle = featuredArticle ? articleTitle(featuredArticle, isFr) : '';
 
   const filtered = useMemo(() => {
     if (genreId === null) return items;
@@ -72,33 +73,67 @@ function HomeContent() {
       )}
 
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '28px 16px 64px' }}>
-        {featuredArticle && (
-          <a href="/blog" style={{ display: 'block', textDecoration: 'none', marginBottom: 24 }}>
-            <div
-              style={{ display: 'flex', gap: 14, alignItems: 'center', backgroundColor: '#141414', border: '1px solid #2A2A2A', borderRadius: 12, padding: '12px 14px', transition: 'border-color 150ms' }}
-              onMouseEnter={e => (e.currentTarget.style.borderColor = '#C5001E')}
-              onMouseLeave={e => (e.currentTarget.style.borderColor = '#2A2A2A')}
-            >
-              {featuredPoster && (
-                <img
-                  src={featuredPoster.startsWith('http') ? featuredPoster : `${TMDB_IMAGE_BASE}${featuredPoster}`}
-                  alt={featuredTitle}
-                  style={{ width: 54, height: 80, objectFit: 'cover', borderRadius: 6, flexShrink: 0 }}
-                />
-              )}
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <span style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1, background: 'linear-gradient(90deg,#C5001E,#E8006A)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                  {lang === 'fr' ? 'Article du blog' : 'Blog post'}
-                </span>
-                <p style={{ color: '#fff', fontSize: 13, fontWeight: 600, margin: '3px 0 4px', lineHeight: 1.3, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical' }}>
-                  {featuredTitle}
-                </p>
-                <p style={{ color: '#888', fontSize: 12, margin: 0, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', lineHeight: 1.5 }}>
-                  {articleExcerpt(featuredArticle, isFr)}
-                </p>
-              </div>
-            </div>
-          </a>
+        {featuredArticles.length > 0 && (
+          <div style={{ display: 'grid', gap: 8, marginBottom: 24 }}>
+            {featuredArticles.map(article => {
+              const structured = (article.format ?? 'SIMPLE') !== 'SIMPLE';
+              const title = articleTitle(article, isFr);
+              const hero = heroItem(article);
+              const poster = hero?.posterPath ?? article.posterPath;
+              const itemCount = article.items?.length ?? 0;
+
+              return (
+                <a
+                  key={article.id}
+                  href={`/blog/${slugify(title, article.id)}`}
+                  style={{ display: 'block', textDecoration: 'none' }}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      gap: 14,
+                      alignItems: 'center',
+                      backgroundColor: structured ? '#181113' : '#141414',
+                      border: `1px solid ${structured ? '#4A1720' : '#2A2A2A'}`,
+                      borderRadius: 12,
+                      padding: '12px 14px',
+                      transition: 'border-color 150ms',
+                    }}
+                    onMouseEnter={e => (e.currentTarget.style.borderColor = '#C5001E')}
+                    onMouseLeave={e => (e.currentTarget.style.borderColor = structured ? '#4A1720' : '#2A2A2A')}
+                  >
+                    {poster && (
+                      <img
+                        src={poster.startsWith('http') ? poster : `${TMDB_IMAGE_BASE}${poster}`}
+                        alt={title}
+                        style={{ width: 54, height: 80, objectFit: 'cover', borderRadius: 6, flexShrink: 0 }}
+                      />
+                    )}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                        <span style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1, background: 'linear-gradient(90deg,#C5001E,#E8006A)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                          {structured
+                            ? formatLabel(article.format, isFr)
+                            : (lang === 'fr' ? 'Article du blog' : 'Blog post')}
+                        </span>
+                        {structured && itemCount > 1 && (
+                          <span style={{ color: '#777', fontSize: 10 }}>
+                            {itemCount} {isFr ? 'titres analysés' : 'titles covered'}
+                          </span>
+                        )}
+                      </div>
+                      <p style={{ color: '#fff', fontSize: 13, fontWeight: 600, margin: '3px 0 4px', lineHeight: 1.3, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical' }}>
+                        {title}
+                      </p>
+                      <p style={{ color: '#888', fontSize: 12, margin: 0, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', lineHeight: 1.5 }}>
+                        {articleExcerpt(article, isFr)}
+                      </p>
+                    </div>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
         )}
 
         {error && <p style={{ color: '#C5001E', fontSize: 14, marginBottom: 20 }}>{error}</p>}
