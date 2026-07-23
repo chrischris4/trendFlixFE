@@ -6,6 +6,7 @@ import { useBlog } from '../hooks/useBlog';
 import { useAppStore } from '../store';
 import { TMDB_IMAGE_BASE } from '../constants/config';
 import { slugify } from '../utils/slug';
+import { articleExcerpt, articleTitle, heroItem } from '../utils/blog';
 
 export default function LatestArticles({ limit = 3 }: { limit?: number }) {
   const { i18n } = useTranslation();
@@ -29,24 +30,27 @@ export default function LatestArticles({ limit = 3 }: { limit?: number }) {
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 14 }}>
         {latest.map(a => {
-          const poster = a.posterPath
-            ? (a.posterPath.startsWith('http') ? a.posterPath : `${TMDB_IMAGE_BASE}${a.posterPath}`)
+          const item = heroItem(a);
+          const posterPath = item?.posterPath ?? a.posterPath;
+          const poster = posterPath
+            ? (posterPath.startsWith('http') ? posterPath : `${TMDB_IMAGE_BASE}${posterPath}`)
             : null;
-          const excerpt = (isFr ? a.editorialFr : a.editorialEn) ?? '';
+          const title = articleTitle(a, isFr);
+          const excerpt = articleExcerpt(a, isFr);
           return (
             <Link
               key={a.id}
-              href={`/blog/${slugify(a.title, a.id)}`}
+              href={`/blog/${slugify(title, a.id)}`}
               style={{ display: 'flex', gap: 12, backgroundColor: '#141414', border: '1px solid #2A2A2A', borderRadius: 12, padding: 12, textDecoration: 'none', transition: 'border-color 150ms' }}
               onMouseEnter={e => (e.currentTarget.style.borderColor = '#C5001E')}
               onMouseLeave={e => (e.currentTarget.style.borderColor = '#2A2A2A')}
             >
               {poster && (
-                <img src={poster} alt={a.title} loading="lazy" style={{ width: 54, height: 81, objectFit: 'cover', borderRadius: 6, flexShrink: 0 }} />
+                <img src={poster} alt={title} loading="lazy" style={{ width: 54, height: 81, objectFit: 'cover', borderRadius: 6, flexShrink: 0 }} />
               )}
               <span style={{ flex: 1, minWidth: 0 }}>
                 <span style={{ display: 'block', color: '#fff', fontSize: 13, fontWeight: 700, lineHeight: 1.35, marginBottom: 4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {a.title}
+                  {title}
                 </span>
                 <span style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden', color: '#888', fontSize: 12, lineHeight: 1.6 }}>
                   {excerpt}

@@ -10,6 +10,7 @@ import { useAppStore } from '../store';
 import { TMDB_IMAGE_BASE } from '../constants/config';
 import { slugify } from '../utils/slug';
 import type { BlogArticle } from '../types';
+import { articleExcerpt, articleTitle, formatLabel, heroItem } from '../utils/blog';
 
 function formatViews(n: number): string {
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
@@ -18,15 +19,21 @@ function formatViews(n: number): string {
 }
 
 function ArticleCard({ article, isFr, t }: { article: BlogArticle; isFr: boolean; t: (k: string) => string }) {
-  const posterUrl = article.posterPath
-    ? (article.posterPath.startsWith('http') ? article.posterPath : `${TMDB_IMAGE_BASE}${article.posterPath}`)
+  const title = articleTitle(article, isFr);
+  const primary = heroItem(article);
+  const posterPath = primary?.posterPath ?? article.posterPath;
+  const posterUrl = posterPath
+    ? (posterPath.startsWith('http') ? posterPath : `${TMDB_IMAGE_BASE}${posterPath}`)
     : null;
+  const channelTitle = primary?.channelTitle ?? article.channelTitle;
+  const countryCount = primary?.countryCount ?? article.countryCount;
+  const articleType = primary?.type ?? article.type;
 
   return (
     <div style={{ backgroundColor: '#141414', border: '1px solid #2A2A2A', borderRadius: 12, overflow: 'hidden', marginBottom: 32 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '14px 24px 12px' }}>
         <span style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1, background: 'linear-gradient(90deg,#C5001E,#E8006A)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-          {t('blog.high_impact')}
+          {formatLabel(article.format ?? 'SIMPLE', isFr)}
         </span>
         <span style={{ color: '#444', fontSize: 11 }}>·</span>
         <span style={{ fontSize: 11, color: '#555', textTransform: 'capitalize' }}>
@@ -38,23 +45,23 @@ function ArticleCard({ article, isFr, t }: { article: BlogArticle; isFr: boolean
         {posterUrl && (
           <img
             src={posterUrl}
-            alt={article.title}
+            alt={title}
             loading="lazy"
             style={{ width: 130, aspectRatio: '2/3', objectFit: 'cover', borderRadius: 10, flexShrink: 0, border: '1px solid #2A2A2A' }}
           />
         )}
         <div style={{ flex: 1, minWidth: 0 }}>
-          <Link href={`/blog/${slugify(article.title, article.id)}`} style={{ textDecoration: 'none' }}>
+          <Link href={`/blog/${slugify(title, article.id)}`} style={{ textDecoration: 'none' }}>
             <h2
               style={{ color: '#fff', fontSize: 17, fontWeight: 700, margin: '0 0 6px', lineHeight: 1.4, transition: 'color 150ms' }}
               onMouseEnter={e => (e.currentTarget.style.color = '#FF5599')}
               onMouseLeave={e => (e.currentTarget.style.color = '#fff')}
             >
-              {article.title}
+              {title}
             </h2>
           </Link>
-          {article.channelTitle && (
-            <p style={{ color: '#AAAAAA', fontSize: 13, margin: '0 0 16px' }}>{article.channelTitle}</p>
+          {channelTitle && (
+            <p style={{ color: '#AAAAAA', fontSize: 13, margin: '0 0 16px' }}>{channelTitle}</p>
           )}
 
           <p style={{ color: '#555', fontSize: 11, margin: '0 0 8px', textTransform: 'uppercase', letterSpacing: 0.5 }}>
@@ -67,16 +74,16 @@ function ArticleCard({ article, isFr, t }: { article: BlogArticle; isFr: boolean
                 {' '}{t('blog.views')}
               </div>
             )}
-            {article.countryCount != null && (
+            {countryCount != null && (
               <div style={{ backgroundColor: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: 20, padding: '4px 14px', fontSize: 12, color: '#ddd' }}>
                 {t('blog.trending_in')}{' '}
-                <span style={{ color: '#C5001E', fontWeight: 700 }}>{article.countryCount}</span>
+                <span style={{ color: '#C5001E', fontWeight: 700 }}>{countryCount}</span>
                 {' '}{t('blog.countries')}
               </div>
             )}
-            {article.type && (
+            {articleType && (
               <div style={{ backgroundColor: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: 20, padding: '4px 14px', fontSize: 12, color: '#ddd' }}>
-                {article.type === 'movie' ? t('card.movie') : t('card.tv')}
+                {articleType === 'movie' ? t('card.movie') : t('card.tv')}
               </div>
             )}
           </div>
@@ -85,9 +92,9 @@ function ArticleCard({ article, isFr, t }: { article: BlogArticle; isFr: boolean
 
       <div style={{ padding: '18px 24px 24px' }}>
         <p style={{ color: '#AAAAAA', fontSize: 14, lineHeight: 1.7, margin: 0, display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-          {isFr ? article.editorialFr : article.editorialEn}
+          {articleExcerpt(article, isFr)}
         </p>
-        <Link href={`/blog/${slugify(article.title, article.id)}`} style={{ display: 'inline-block', marginTop: 12, color: '#FF5599', fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>
+        <Link href={`/blog/${slugify(title, article.id)}`} style={{ display: 'inline-block', marginTop: 12, color: '#FF5599', fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>
           {t('blog.read_more')} →
         </Link>
       </div>

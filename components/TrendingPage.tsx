@@ -10,6 +10,7 @@ import { useTrending } from '../hooks/useTrending';
 import { useBlog } from '../hooks/useBlog';
 import { useAppStore } from '../store';
 import { TMDB_IMAGE_BASE } from '../constants/config';
+import { articleExcerpt, articleTitle, heroItem } from '../utils/blog';
 
 interface Props { type: 'movie' | 'tv' }
 
@@ -18,12 +19,16 @@ export default function TrendingPage({ type }: Props) {
   const { items, loading, error } = useTrending(type, 40);
   const { articles } = useBlog();
   const lang = useAppStore(s => s.lang);
+  const isFr = lang === 'fr';
 
   const featuredArticle = useMemo(() => {
     const filtered = articles.filter(a => a.type === type);
     if (filtered.length === 0) return null;
     return filtered[Math.floor(Math.random() * filtered.length)];
   }, [articles, type]);
+  const featuredHero = featuredArticle ? heroItem(featuredArticle) : undefined;
+  const featuredPoster = featuredHero?.posterPath ?? featuredArticle?.posterPath;
+  const featuredTitle = featuredArticle ? articleTitle(featuredArticle, isFr) : '';
 
   const title      = type === 'movie' ? t('movies.title')       : t('series.title');
   const subtitle   = type === 'movie' ? t('movies.subtitle')    : t('series.subtitle');
@@ -51,10 +56,10 @@ export default function TrendingPage({ type }: Props) {
               onMouseEnter={e => (e.currentTarget.style.borderColor = '#C5001E')}
               onMouseLeave={e => (e.currentTarget.style.borderColor = '#2A2A2A')}
             >
-              {featuredArticle.posterPath && (
+              {featuredPoster && (
                 <img
-                  src={featuredArticle.posterPath.startsWith('http') ? featuredArticle.posterPath : `${TMDB_IMAGE_BASE}${featuredArticle.posterPath}`}
-                  alt={featuredArticle.title}
+                  src={featuredPoster.startsWith('http') ? featuredPoster : `${TMDB_IMAGE_BASE}${featuredPoster}`}
+                  alt={featuredTitle}
                   style={{ width: 54, height: 80, objectFit: 'cover', borderRadius: 6, flexShrink: 0 }}
                 />
               )}
@@ -63,10 +68,10 @@ export default function TrendingPage({ type }: Props) {
                   {lang === 'fr' ? 'Article du blog' : 'Blog post'}
                 </span>
                 <p style={{ color: '#fff', fontSize: 13, fontWeight: 600, margin: '3px 0 4px', lineHeight: 1.3, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical' }}>
-                  {featuredArticle.title}
+                  {featuredTitle}
                 </p>
                 <p style={{ color: '#888', fontSize: 12, margin: 0, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', lineHeight: 1.5 }}>
-                  {lang === 'fr' ? featuredArticle.editorialFr : featuredArticle.editorialEn}
+                  {articleExcerpt(featuredArticle, isFr)}
                 </p>
               </div>
             </div>

@@ -1,4 +1,4 @@
-import type { BlogArticle } from '../types';
+import type { BlogArticle, BlogArticleFormat } from '../types';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 const ADMIN_KEY = process.env.NEXT_PUBLIC_ADMIN_API_KEY ?? '';
@@ -14,15 +14,36 @@ async function adminFetch(path: string, options: RequestInit = {}) {
 }
 
 export interface BlogArticlePayload {
+  format?: BlogArticleFormat;
   tmdbId?: number;
   type?: string;
   title: string;
+  titleFr?: string;
+  titleEn?: string;
   channelTitle: string;
   posterPath?: string;
   viewCount?: number;
+  countryCount?: number;
   weekOf: string;
   editorialFr: string;
   editorialEn: string;
+  introFr?: string;
+  introEn?: string;
+  conclusionFr?: string;
+  conclusionEn?: string;
+  items?: {
+    position?: number;
+    tmdbId?: number;
+    type?: string;
+    title: string;
+    channelTitle?: string;
+    posterPath?: string;
+    countryCount?: number;
+    sectionTitleFr?: string;
+    sectionTitleEn?: string;
+    sectionTextFr?: string;
+    sectionTextEn?: string;
+  }[];
   published?: boolean;
 }
 
