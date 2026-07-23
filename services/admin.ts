@@ -1,12 +1,15 @@
 import type { BlogArticle, BlogArticleFormat } from '../types';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
-const ADMIN_KEY = process.env.NEXT_PUBLIC_ADMIN_API_KEY ?? '';
+
+function adminKey(): string {
+  return typeof window === 'undefined' ? '' : sessionStorage.getItem('trend_admin_key') ?? '';
+}
 
 async function adminFetch(path: string, options: RequestInit = {}) {
   const res = await fetch(`${API_BASE}${path}`, {
     ...options,
-    headers: { 'Content-Type': 'application/json', 'x-admin-key': ADMIN_KEY, ...options.headers },
+    headers: { 'Content-Type': 'application/json', 'x-admin-key': adminKey(), ...options.headers },
   });
   const data = await res.json();
   if (!res.ok) throw new Error(data.message ?? `HTTP ${res.status}`);

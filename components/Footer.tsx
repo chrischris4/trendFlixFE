@@ -1,12 +1,14 @@
 'use client';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
+import PrivacyChoices from './PrivacyChoices';
 
 export default function Footer() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const links = [
     { label: t('nav.about'),      href: '/about' },
+    { label: i18n.language === 'fr' ? 'Méthodologie' : 'Methodology', href: '/methodology' },
     { label: t('pages.terms.title'), href: '/terms' },
     { label: t('footer.privacy'), href: '/privacy' },
     { label: t('footer.contact'), href: '/contact' },
@@ -20,6 +22,7 @@ export default function Footer() {
             {link.label}
           </Link>
         ))}
+        <PrivacyChoices label={i18n.language === 'fr' ? 'Confidentialité et cookies' : 'Privacy and cookie settings'} />
       </div>
       <span style={{ color: '#AAAAAA', fontSize: 12 }}>© {new Date().getFullYear()} TrendingShows · {t('footer.rights')}</span>
     </div>

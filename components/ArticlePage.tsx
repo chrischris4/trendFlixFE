@@ -68,9 +68,25 @@ export default function ArticlePage({ id }: { id: number }) {
   const hasStructuredSections = article.items?.some(item =>
     Boolean(item.sectionTextFr || item.sectionTextEn || item.sectionTitleFr || item.sectionTitleEn),
   ) || article.items?.length > 1;
+  const articleUrl = `https://trendingshows.com/blog/${slugify(title, article.id)}`;
+  const publishedAt = new Date(article.createdAt).toISOString();
 
   return (
     <div style={{ backgroundColor: '#0F0F0F', minHeight: '100vh' }}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'AnalysisNewsArticle',
+          headline: title,
+          datePublished: publishedAt,
+          dateModified: publishedAt,
+          mainEntityOfPage: articleUrl,
+          author: { '@type': 'Organization', name: 'TrendingShows Editorial' },
+          publisher: { '@type': 'Organization', name: 'TrendingShows', url: 'https://trendingshows.com' },
+          ...(posterUrl ? { image: posterUrl } : {}),
+        }) }}
+      />
       <Header />
       <div style={{ maxWidth: 720, margin: '0 auto', padding: '32px 16px 64px' }}>
         <Link href="/blog" style={{ color: '#888', fontSize: 13, textDecoration: 'none' }}>← {t('blog.title')}</Link>
@@ -87,6 +103,10 @@ export default function ArticlePage({ id }: { id: number }) {
 
         <h1 style={{ color: '#fff', fontSize: 'clamp(20px, 4vw, 28px)', fontWeight: 800, lineHeight: 1.3, marginBottom: 6 }}>{title}</h1>
         {channelTitle && <p style={{ color: '#FF5599', fontSize: 15, fontWeight: 600, marginBottom: 20 }}>{channelTitle}</p>}
+        <p style={{ color: '#888', fontSize: 12, lineHeight: 1.6, margin: '-8px 0 20px' }}>
+          {isFr ? 'Par la rédaction TrendingShows, à partir des données de popularité TMDB.' : 'By the TrendingShows editorial team, using TMDB popularity data.'}{' '}
+          <Link href="/methodology" style={{ color: '#FF5599' }}>{isFr ? 'Notre méthodologie' : 'Our methodology'}</Link>
+        </p>
 
         <div style={{ display: 'flex', gap: 18, alignItems: 'flex-start', marginBottom: 24, flexWrap: 'wrap' }}>
           {posterUrl && !hasStructuredSections && (

@@ -27,6 +27,7 @@ export const metadata: Metadata = {
     title: 'TrendingShows - #1 Trending Movies & TV Shows Worldwide',
     description: 'Discover what the world is watching right now. Updated daily.',
   },
+  other: { 'google-adsense-account': 'ca-pub-8982511031951947' },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
