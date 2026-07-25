@@ -22,7 +22,7 @@ export default function Footer() {
             {link.label}
           </Link>
         ))}
-        <PrivacyChoices label={i18n.language === 'fr' ? 'Confidentialité et cookies' : 'Privacy and cookie settings'} />
+        <PrivacyChoices label={i18n.language === 'fr' ? 'Gérer les cookies' : 'Cookie settings'} />
       </div>
       <span style={{ color: '#AAAAAA', fontSize: 12 }}>© {new Date().getFullYear()} TrendingShows · {t('footer.rights')}</span>
     </div>

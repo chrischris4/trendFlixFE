@@ -2,12 +2,16 @@
 
 export default function PrivacyChoices({ label }: { label: string }) {
   function openChoices() {
-    const googlefc = (window as Window & {
+    const w = window as Window & {
       googlefc?: { showRevocationMessage?: () => void };
-    }).googlefc;
+      __tcfapi?: unknown;
+    };
 
-    if (googlefc?.showRevocationMessage) {
-      googlefc.showRevocationMessage();
+    // googlefc est injecté par AdSense partout, mais showRevocationMessage()
+    // ne fait rien si aucun CMP n'est actif pour cet utilisateur (hors EEE/UK).
+    // On ne l'appelle donc que si l'API TCF est bien présente.
+    if (w.__tcfapi && w.googlefc?.showRevocationMessage) {
+      w.googlefc.showRevocationMessage();
       return;
     }
     window.location.assign('/privacy');
