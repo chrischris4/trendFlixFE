@@ -7,6 +7,7 @@ import Footer from './Footer';
 import MovieCard from './MovieCard';
 import { MOVIE_GENRES, TV_GENRES, genreLabel as genreName } from '../constants/config';
 import { useTrending } from '../hooks/useTrending';
+import { genreInsights } from '../constants/insights';
 import type { TrendingItem } from '../types';
 
 interface Props {
@@ -22,6 +23,7 @@ export default function GenrePage({ genre, type, initialItems }: Props) {
 
   const genreList = type === 'movie' ? MOVIE_GENRES : TV_GENRES;
   const genreDef = genreList.find(g => g.slug === genre);
+  const insight = genreInsights[genre]?.[i18n.language === 'fr' ? 'fr' : 'en'] ?? null;
 
   const items = useMemo(() => {
     if (!genreDef) return [];
@@ -52,6 +54,9 @@ export default function GenrePage({ genre, type, initialItems }: Props) {
       <Header />
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '32px 16px 64px' }}>
         <h1 style={{ color: '#fff', fontSize: 22, fontWeight: 800, marginBottom: 4 }}>{title}</h1>
+        {insight && (
+          <p style={{ color: '#AAAAAA', fontSize: 14, margin: '10px 0 18px', lineHeight: 1.8, maxWidth: 780 }}>{insight}</p>
+        )}
         {!loading && !error && <p style={{ color: '#888', fontSize: 13, marginBottom: 28 }}>{t('genre.results', { count: items.length })}</p>}
 
         {error && <p style={{ color: '#C5001E', fontSize: 14, marginBottom: 20 }}>{error}</p>}

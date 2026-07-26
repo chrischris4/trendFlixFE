@@ -15,7 +15,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://trendingshows.com'
 const url = (path: string) => `${BASE_URL}${path}/`.replace(/\/+$/, '/');
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const staticRoutes = ['', '/movies', '/series', '/weekly', '/stats', '/blog', '/about', '/methodology', '/contact', '/privacy'].map(route => ({
+  const staticRoutes = ['', '/movies', '/series', '/weekly', '/stats', '/blog', '/genres', '/about', '/methodology', '/contact', '/privacy'].map(route => ({
     url: url(route),
     lastModified: new Date(),
     changeFrequency: route === '' ? 'daily' : 'weekly',
