@@ -1,44 +1,32 @@
 export const runtime = 'edge';
 
 import type { Metadata } from 'next';
-import ClientOnly from '../../../components/ClientOnly';
 import ArticlePage from '../../../components/ArticlePage';
-import { parseIdFromSlug } from '../../../utils/slug';
+import { parseIdFromSlug, slugify } from '../../../utils/slug';
+import { getBlogArticles } from '../../../services/serverApi';
+import { articleExcerpt, articleTitle, articleWordCount } from '../../../utils/blog';
 
 interface Props { params: Promise<{ slug: string }> }
 
-interface Article {
-  id: number;
-  title: string;
-  titleEn?: string | null;
-  editorialEn: string;
-  createdAt: string;
-}
-
-async function getArticle(id: number): Promise<Article | null> {
-  try {
-    const response = await fetch('https://trendflixbe-production.up.railway.app/blog', { cache: 'no-store' });
-    if (!response.ok) return null;
-    const articles: Article[] = await response.json();
-    return articles.find(article => article.id === id) ?? null;
-  } catch {
-    return null;
-  }
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const article = await getArticle(Number(parseIdFromSlug(slug)));
-  const title = article?.titleEn || article?.title || 'Film and television trend analysis';
-  const description = article?.editorialEn.slice(0, 155)
-    || 'Original analysis based on worldwide TMDB popularity data.';
-  const wordCount = article?.editorialEn.trim().split(/\s+/).filter(Boolean).length ?? 0;
+  const id = Number(parseIdFromSlug(slug));
+  const article = (await getBlogArticles()).find(a => a.id === id);
+  const title = article ? articleTitle(article, false) : 'Film and television trend analysis';
+  const description = article
+    ? articleExcerpt(article, false).slice(0, 155)
+    : 'Original analysis based on worldwide TMDB popularity data.';
 
   return {
     title,
     description,
-    robots: { index: wordCount >= 350, follow: true },
-    alternates: { canonical: `https://trendingshows.com/blog/${slug}` },
+    robots: { index: article ? articleWordCount(article) >= 350 : false, follow: true },
+    // Le slug varie avec la langue du titre : on canonicalise toujours sur la version EN.
+    alternates: {
+      canonical: article
+        ? `https://trendingshows.com/blog/${slugify(title, article.id)}`
+        : `https://trendingshows.com/blog/${slug}`,
+    },
     openGraph: {
       type: 'article',
       title,
@@ -50,5 +38,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BlogArticleRoute({ params }: Props) {
   const { slug } = await params;
-  return <ClientOnly><ArticlePage id={Number(parseIdFromSlug(slug))} /></ClientOnly>;
+  const articles = await getBlogArticles();
+  return <ArticlePage id={Number(parseIdFromSlug(slug))} initialArticles={articles} />;
 }

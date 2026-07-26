@@ -7,12 +7,18 @@ import Footer from './Footer';
 import MovieCard from './MovieCard';
 import { MOVIE_GENRES, TV_GENRES, genreLabel as genreName } from '../constants/config';
 import { useTrending } from '../hooks/useTrending';
+import type { TrendingItem } from '../types';
 
-interface Props { genre: string; type: 'movie' | 'tv' }
+interface Props {
+  genre: string;
+  type: 'movie' | 'tv';
+  /** Classement rendu par le serveur, pour que le HTML ne soit pas vide au crawl. */
+  initialItems?: TrendingItem[];
+}
 
-export default function GenrePage({ genre, type }: Props) {
+export default function GenrePage({ genre, type, initialItems }: Props) {
   const { t, i18n } = useTranslation();
-  const { items: all, loading, error } = useTrending(type, 40);
+  const { items: all, loading, error } = useTrending(type, 40, initialItems, type);
 
   const genreList = type === 'movie' ? MOVIE_GENRES : TV_GENRES;
   const genreDef = genreList.find(g => g.slug === genre);

@@ -1,11 +1,14 @@
 import type { MetadataRoute } from 'next';
 import { MOVIE_GENRES, TV_GENRES } from '../constants/config';
 import { slugify } from '../utils/slug';
+import { articleTitle, articleWordCount } from '../utils/blog';
+import { getBlogArticles } from '../services/serverApi';
 
 export const runtime = 'edge';
+// Sinon le sitemap est figé au build et n'inclut jamais les articles publiés depuis.
+export const dynamic = 'force-dynamic';
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://trendingshows.com';
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'https://trendflixbe-production.up.railway.app';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes = ['', '/movies', '/series', '/weekly', '/stats', '/blog', '/about', '/methodology', '/contact', '/privacy'].map(route => ({
@@ -29,24 +32,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
-  // Articles publiés : une URL par article, ajoutée au fil des publications du cron
-  let blogRoutes: MetadataRoute.Sitemap = [];
-  try {
-    const res = await fetch(`${API_BASE}/blog`, { cache: 'no-store' });
-    if (res.ok) {
-      const articles: { id: number; title: string; editorialEn: string; createdAt: string }[] = await res.json();
-      blogRoutes = articles
-      .filter(article => article.editorialEn.trim().split(/\s+/).filter(Boolean).length >= 350)
-      .map(a => ({
-        url: `${BASE_URL}/blog/${slugify(a.title, a.id)}`,
-        lastModified: new Date(a.createdAt),
-        changeFrequency: 'monthly' as const,
-        priority: 0.7,
-      }));
-    }
-  } catch {
-    // API indisponible : le sitemap reste valide sans les articles
-  }
+  // Articles publiés : une URL par article, ajoutée au fil des publications du cron.
+  // Même seuil et même slug que la page article, pour ne pas soumettre au crawl
+  // des URLs marquées noindex ou différentes des liens internes.
+  const blogRoutes: MetadataRoute.Sitemap = (await getBlogArticles())
+    .filter(article => articleWordCount(article) >= 350)
+    .map(a => ({
+      url: `${BASE_URL}/blog/${slugify(articleTitle(a, false), a.id)}`,
+      lastModified: new Date(a.createdAt),
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    }));
 
   return [...staticRoutes, ...movieGenreRoutes, ...tvGenreRoutes, ...blogRoutes];
 }

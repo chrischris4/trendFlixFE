@@ -1,9 +1,9 @@
 export const runtime = 'edge';
 
 import type { Metadata } from 'next';
-import ClientOnly from '../../../../components/ClientOnly';
 import GenrePage from '../../../../components/GenrePage';
 import { MOVIE_GENRES, genreLabel } from '../../../../constants/config';
+import { getTrendingItems } from '../../../../services/serverApi';
 
 interface Props { params: Promise<{ genre: string }> }
 
@@ -21,5 +21,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function MovieGenrePage({ params }: Props) {
   const { genre } = await params;
-  return <ClientOnly><GenrePage genre={genre} type="movie" /></ClientOnly>;
+  const initialItems = await getTrendingItems('movie', 40);
+  return <GenrePage genre={genre} type="movie" initialItems={initialItems} />;
 }

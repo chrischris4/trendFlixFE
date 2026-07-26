@@ -166,11 +166,11 @@ function FilterBar({
   );
 }
 
-export default function BlogPage() {
+export default function BlogPage({ initialArticles }: { initialArticles?: BlogArticle[] }) {
   const { t } = useTranslation();
   const { lang } = useAppStore();
   const isFr = lang === 'fr';
-  const { articles, loading, error } = useBlog();
+  const { articles, loading, error } = useBlog(initialArticles);
   const [filter, setFilter] = useState<BlogFilter>('all');
 
   const counts = {

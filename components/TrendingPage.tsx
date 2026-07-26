@@ -11,13 +11,19 @@ import { useBlog } from '../hooks/useBlog';
 import { useAppStore } from '../store';
 import { TMDB_IMAGE_BASE } from '../constants/config';
 import { articleExcerpt, articleTitle, heroItem } from '../utils/blog';
+import type { BlogArticle, TrendingItem } from '../types';
 
-interface Props { type: 'movie' | 'tv' }
+interface Props {
+  type: 'movie' | 'tv';
+  /** Contenu rendu par le serveur, pour que le HTML ne soit pas vide au crawl. */
+  initialItems?: TrendingItem[];
+  initialArticles?: BlogArticle[];
+}
 
-export default function TrendingPage({ type }: Props) {
+export default function TrendingPage({ type, initialItems, initialArticles }: Props) {
   const { t } = useTranslation();
-  const { items, loading, error } = useTrending(type, 40);
-  const { articles } = useBlog();
+  const { items, loading, error } = useTrending(type, 40, initialItems, type);
+  const { articles } = useBlog(initialArticles);
   const lang = useAppStore(s => s.lang);
   const isFr = lang === 'fr';
 

@@ -17,6 +17,21 @@ export function articleExcerpt(article: BlogArticle, isFr: boolean): string {
   return articleIntro(article, isFr);
 }
 
+// Compte le texte réellement rendu sur la page. Les formats structurés portent
+// leur contenu dans intro + sections + conclusion, pas dans `editorial`.
+export function articleWordCount(article: BlogArticle, isFr = false): number {
+  const count = (text?: string | null) => (text ?? '').trim().split(/\s+/).filter(Boolean).length;
+  const structured = [
+    isFr ? article.introFr : article.introEn,
+    isFr ? article.conclusionFr : article.conclusionEn,
+    ...(article.items ?? []).flatMap(item => [
+      isFr ? item.sectionTitleFr : item.sectionTitleEn,
+      isFr ? item.sectionTextFr : item.sectionTextEn,
+    ]),
+  ].reduce((total, part) => total + count(part), 0);
+  return Math.max(structured, count(isFr ? article.editorialFr : article.editorialEn));
+}
+
 export function itemSectionTitle(item: BlogArticleItem, isFr: boolean): string {
   return (isFr ? item.sectionTitleFr : item.sectionTitleEn) || item.title;
 }

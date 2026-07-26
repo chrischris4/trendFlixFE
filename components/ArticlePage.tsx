@@ -8,6 +8,7 @@ import { useBlog } from '../hooks/useBlog';
 import { useAppStore } from '../store';
 import { TMDB_IMAGE_BASE } from '../constants/config';
 import { slugify } from '../utils/slug';
+import type { BlogArticle } from '../types';
 import {
   articleConclusion,
   articleIntro,
@@ -24,11 +25,11 @@ function formatViews(n: number): string {
   return `${n}`;
 }
 
-export default function ArticlePage({ id }: { id: number }) {
+export default function ArticlePage({ id, initialArticles }: { id: number; initialArticles?: BlogArticle[] }) {
   const { t } = useTranslation();
   const { lang } = useAppStore();
   const isFr = lang === 'fr';
-  const { articles, loading, error } = useBlog();
+  const { articles, loading, error } = useBlog(initialArticles);
 
   const article = articles.find(a => a.id === id);
   const others = articles.filter(a => a.id !== id).slice(0, 3);

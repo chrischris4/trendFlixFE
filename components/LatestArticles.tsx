@@ -7,12 +7,13 @@ import { useAppStore } from '../store';
 import { TMDB_IMAGE_BASE } from '../constants/config';
 import { slugify } from '../utils/slug';
 import { articleExcerpt, articleTitle, heroItem } from '../utils/blog';
+import type { BlogArticle } from '../types';
 
-export default function LatestArticles({ limit = 3 }: { limit?: number }) {
+export default function LatestArticles({ limit = 3, initialArticles }: { limit?: number; initialArticles?: BlogArticle[] }) {
   const { i18n } = useTranslation();
   const { lang } = useAppStore();
   const isFr = lang === 'fr' || i18n.language === 'fr';
-  const { articles } = useBlog();
+  const { articles } = useBlog(initialArticles);
 
   const latest = articles.slice(0, limit);
   if (latest.length === 0) return null;
