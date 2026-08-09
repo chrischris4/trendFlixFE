@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next';
 import { MOVIE_GENRES, TV_GENRES } from '../constants/config';
 import { slugify } from '../utils/slug';
 import { articleTitle, articleWordCount } from '../utils/blog';
-import { getBlogArticles } from '../services/serverApi';
+import { getBlogArticles, getTrendingItems } from '../services/serverApi';
 
 export const runtime = 'edge';
 // Sinon le sitemap est figé au build et n'inclut jamais les articles publiés depuis.
@@ -22,19 +22,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: route === '' ? 1 : 0.8,
   })) as MetadataRoute.Sitemap;
 
-  const movieGenreRoutes = MOVIE_GENRES.map(g => ({
-    url: url(`/movies/genre/${g.slug}`),
-    lastModified: new Date(),
-    changeFrequency: 'weekly' as const,
-    priority: 0.6,
-  }));
+  // Un genre sans aucun titre dans le classement du jour rend une page vide,
+  // marquée noindex par la route. On ne la soumet donc pas au crawl : même
+  // filtre des deux côtés, sinon le sitemap contredit la balise robots.
+  const [movies, series] = await Promise.all([
+    getTrendingItems('movie', 40),
+    getTrendingItems('tv', 40),
+  ]);
 
-  const tvGenreRoutes = TV_GENRES.map(g => ({
-    url: url(`/series/genre/${g.slug}`),
-    lastModified: new Date(),
-    changeFrequency: 'weekly' as const,
-    priority: 0.6,
-  }));
+  const movieGenreRoutes = MOVIE_GENRES
+    .filter(g => movies.some(item => item.genreIds.includes(g.id)))
+    .map(g => ({
+      url: url(`/movies/genre/${g.slug}`),
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.6,
+    }));
+
+  const tvGenreRoutes = TV_GENRES
+    .filter(g => series.some(item => item.genreIds.includes(g.id)))
+    .map(g => ({
+      url: url(`/series/genre/${g.slug}`),
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.6,
+    }));
 
   // Articles publiés : une URL par article, ajoutée au fil des publications du cron.
   // Même seuil et même slug que la page article, pour ne pas soumettre au crawl
