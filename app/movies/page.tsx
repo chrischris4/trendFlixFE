@@ -5,8 +5,8 @@ export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 
 export const metadata = {
-  title: 'Films en tendance',
-  description: 'Découvrez les films qui cartonnent en ce moment dans le monde entier.',
+  title: 'Trending movies',
+  description: 'Discover the films everyone is watching right now, worldwide.',
 };
 
 export default async function MoviesPage() {

@@ -2,14 +2,14 @@ import type { Metadata } from 'next';
 import GenresGuidePage from '../../components/GenresGuidePage';
 
 export const metadata: Metadata = {
-  title: 'Guide des genres — TrendingShows',
-  description: "Ce que les données TMDB révèlent sur chaque genre, du documentaire à l'action : pourquoi les notes varient autant d'un genre à l'autre, et comment les lire.",
+  title: 'Genre guide — TrendingShows',
+  description: 'What the TMDB data reveals about each genre, from documentary to action: why ratings vary so much between genres, and how to read them.',
   alternates: { canonical: 'https://trendingshows.com/genres/' },
   openGraph: {
     type: 'article',
     url: 'https://trendingshows.com/genres/',
-    title: 'Guide des genres — TrendingShows',
-    description: 'Ce que les données TMDB révèlent sur chaque genre, et comment lire une note de film ou de série.',
+    title: 'Genre guide — TrendingShows',
+    description: 'What the TMDB data reveals about each genre, and how to read a film or series rating.',
     siteName: 'TrendingShows',
   },
 };

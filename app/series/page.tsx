@@ -5,8 +5,8 @@ export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 
 export const metadata = {
-  title: 'Séries en tendance',
-  description: 'Découvrez les séries dont tout le monde parle en ce moment.',
+  title: 'Trending TV series',
+  description: 'Discover the shows everyone is talking about right now.',
 };
 
 export default async function SeriesPage() {

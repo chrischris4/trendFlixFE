@@ -1,8 +1,8 @@
 import StatsPage from '../../components/StatsPage';
 
 export const metadata = {
-  title: 'Statistiques',
-  description: 'Vue d\'ensemble des films et séries analysés par TrendFlix.',
+  title: 'Statistics',
+  description: 'An overview of the films and series tracked by TrendingShows.',
 };
 
 export default function Stats() {

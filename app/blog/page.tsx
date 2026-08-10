@@ -6,8 +6,8 @@ export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 
 export const metadata = {
-  title: 'Blog — Analyses tendances',
-  description: 'Analyses et décryptages des tendances mondiales en films et séries.',
+  title: 'Blog — Trend analysis',
+  description: 'Analysis and breakdowns of global film and television trends.',
 };
 
 export default async function Blog() {
