@@ -3,7 +3,8 @@ export const runtime = 'edge';
 import type { Metadata } from 'next';
 import ClientOnly from '../../../components/ClientOnly';
 import DetailPage from '../../../components/DetailPage';
-import ItemTrajectory, { isIndexable } from '../../../components/ItemTrajectory';
+import ItemTrajectory from '../../../components/ItemTrajectory';
+import { isIndexable } from '../../../utils/trajectory';
 import { getItemHistory } from '../../../services/serverApi';
 import { parseIdFromSlug } from '../../../utils/slug';
 
@@ -18,8 +19,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
-    title: `${history.title} : parcours dans le classement`,
-    description: `${history.title} : ${history.daysOnChart} jours au classement, meilleure place ${history.peakRank.rank}e${history.decayPct !== null ? `, ${history.decayPct} % de popularité perdue depuis son pic` : ''}. Relevés quotidiens et courbe de retombée.`,
+    // Metadonnees en anglais, comme `<html lang="en">` et le corps de la page.
+    title: `${history.title}: chart trajectory`,
+    description: `${history.title}: ${history.daysOnChart} days on the chart, best position #${history.peakRank.rank}${history.decayPct !== null ? `, ${history.decayPct}% of its popularity lost since the peak` : ''}. Daily snapshots and decay curve.`,
     // Une fiche n'entre dans l'index que si sa trajectoire est assez longue pour
     // apporter quelque chose : sinon elle n'est qu'un gabarit de plus.
     robots: { index: isIndexable(history), follow: true },
