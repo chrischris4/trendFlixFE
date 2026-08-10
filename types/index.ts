@@ -1,4 +1,26 @@
 /**
+ * Statistique quotidienne calculee par le backend a partir de nos propres
+ * releves : elle n'existe dans aucune source publique, seul un historique
+ * permet de la produire.
+ */
+export interface ChartEvolutionPoint {
+  day: string;
+  type: 'movie' | 'tv';
+  entriesTotal: number;
+  newEntries: number;
+  droppedOut: number;
+  churnPct: number;
+  uniqueLanguages: number;
+  avgPopularity: number | null;
+  topGainerId: number | null;
+  topGainerTitle: string | null;
+  topGainerDelta: number | null;
+  topTenureId: number | null;
+  topTenureTitle: string | null;
+  topTenureDays: number | null;
+}
+
+/**
  * Trajectoire d'un titre reconstituee a partir de nos releves successifs.
  * TMDB expose une popularite instantanee : ni le pic, ni la retombee, ni la duree.
  */

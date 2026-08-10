@@ -1,5 +1,5 @@
 import TrendingPage from '../../components/TrendingPage';
-import { getBlogArticles, getTrendingItems } from '../../services/serverApi';
+import { getBlogArticles, getChartEvolution, getTrendingItems } from '../../services/serverApi';
 
 export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
@@ -10,9 +10,10 @@ export const metadata = {
 };
 
 export default async function MoviesPage() {
-  const [initialItems, initialArticles] = await Promise.all([
+  const [initialItems, initialArticles, evolution] = await Promise.all([
     getTrendingItems('movie', 40),
     getBlogArticles(),
+    getChartEvolution('movie'),
   ]);
-  return <TrendingPage type="movie" initialItems={initialItems} initialArticles={initialArticles} />;
+  return <TrendingPage type="movie" initialItems={initialItems} initialArticles={initialArticles} evolution={evolution} />;
 }

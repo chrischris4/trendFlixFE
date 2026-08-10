@@ -6,21 +6,24 @@ import Header from './Header';
 import Footer from './Footer';
 import MovieCard from './MovieCard';
 import EditorialSection from './EditorialSection';
+import TurnoverSection from './TurnoverSection';
 import { useTrending } from '../hooks/useTrending';
 import { useBlog } from '../hooks/useBlog';
 import { useAppStore } from '../store';
 import { TMDB_IMAGE_BASE } from '../constants/config';
 import { articleExcerpt, articleTitle, heroItem } from '../utils/blog';
-import type { BlogArticle, TrendingItem } from '../types';
+import type { BlogArticle, ChartEvolutionPoint, TrendingItem } from '../types';
 
 interface Props {
   type: 'movie' | 'tv';
   /** Contenu rendu par le serveur, pour que le HTML ne soit pas vide au crawl. */
   initialItems?: TrendingItem[];
   initialArticles?: BlogArticle[];
+  /** Statistiques calculees sur nos propres releves, absentes des sources publiques. */
+  evolution?: ChartEvolutionPoint[];
 }
 
-export default function TrendingPage({ type, initialItems, initialArticles }: Props) {
+export default function TrendingPage({ type, initialItems, initialArticles, evolution }: Props) {
   const { t } = useTranslation();
   const { items, loading, error } = useTrending(type, 40, initialItems, type);
   const { articles } = useBlog(initialArticles);
@@ -106,6 +109,7 @@ export default function TrendingPage({ type, initialItems, initialArticles }: Pr
           </div>
         )}
       </div>
+      <TurnoverSection evolution={evolution} type={type} />
       <EditorialSection page={type === 'movie' ? 'movies' : 'series'} />
       <Footer />
     </div>

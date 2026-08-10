@@ -1,6 +1,6 @@
 import { cache } from 'react';
-import { fetchBlogArticles, fetchTrending, fetchItemHistory } from './api';
-import type { BlogArticle, ItemHistory, TrendingItem } from '../types';
+import { fetchBlogArticles, fetchTrending, fetchItemHistory, fetchEvolution } from './api';
+import type { BlogArticle, ChartEvolutionPoint, ItemHistory, TrendingItem } from '../types';
 
 // Rendu serveur : le contenu doit être dans le HTML envoyé au crawler, pas
 // chargé après coup côté client. `cache()` déduplique l'appel entre
@@ -14,6 +14,14 @@ export const getBlogArticles = cache(async (): Promise<BlogArticle[]> => {
     );
   } catch {
     // API indisponible : la page se rabat sur le chargement client.
+    return [];
+  }
+});
+
+export const getChartEvolution = cache(async (type: 'movie' | 'tv'): Promise<ChartEvolutionPoint[]> => {
+  try {
+    return await fetchEvolution(type, 7);
+  } catch {
     return [];
   }
 });
