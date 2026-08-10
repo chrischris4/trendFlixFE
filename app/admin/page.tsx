@@ -9,26 +9,22 @@ interface FormData {
   tmdbId: string;
   type: string;
   title: string;
-  titleFr: string;
   titleEn: string;
   channelTitle: string;
   posterPath: string;
   viewCount: string;
   weekOf: string;
-  editorialFr: string;
   editorialEn: string;
-  introFr: string;
   introEn: string;
-  conclusionFr: string;
   conclusionEn: string;
   itemsJson: string;
   published: boolean;
 }
 
 const emptyForm: FormData = {
-  format: 'SIMPLE', tmdbId: '', type: 'movie', title: '', titleFr: '', titleEn: '', channelTitle: '',
-  posterPath: '', viewCount: '', weekOf: '', editorialFr: '', editorialEn: '',
-  introFr: '', introEn: '', conclusionFr: '', conclusionEn: '', itemsJson: '',
+  format: 'SIMPLE', tmdbId: '', type: 'movie', title: '', titleEn: '', channelTitle: '',
+  posterPath: '', viewCount: '', weekOf: '', editorialEn: '',
+  introEn: '', conclusionEn: '', itemsJson: '',
   published: false,
 };
 
@@ -53,17 +49,13 @@ export default function AdminPage() {
       tmdbId: a.tmdbId?.toString() ?? '',
       type: a.type ?? 'movie',
       title: a.title,
-      titleFr: a.titleFr ?? a.title,
       titleEn: a.titleEn ?? a.title,
       channelTitle: a.channelTitle,
       posterPath: a.posterPath ?? '',
       viewCount: a.viewCount?.toString() ?? '',
       weekOf: a.weekOf ? a.weekOf.split('T')[0] : '',
-      editorialFr: a.editorialFr,
       editorialEn: a.editorialEn,
-      introFr: a.introFr ?? '',
       introEn: a.introEn ?? '',
-      conclusionFr: a.conclusionFr ?? '',
       conclusionEn: a.conclusionEn ?? '',
       itemsJson: a.items?.length
         ? JSON.stringify(a.items.map(({ id, articleId, ...item }) => item), null, 2)
@@ -92,17 +84,13 @@ export default function AdminPage() {
         ...(form.tmdbId ? { tmdbId: Number(form.tmdbId) } : {}),
         type: form.type || undefined,
         title: form.title,
-        titleFr: form.titleFr || form.title,
         titleEn: form.titleEn || form.title,
         channelTitle: form.channelTitle,
         ...(form.posterPath ? { posterPath: form.posterPath } : {}),
         ...(form.viewCount ? { viewCount: Number(form.viewCount) } : {}),
         weekOf: form.weekOf || new Date().toISOString().split('T')[0],
-        editorialFr: form.editorialFr,
         editorialEn: form.editorialEn,
-        ...(form.introFr ? { introFr: form.introFr } : {}),
         ...(form.introEn ? { introEn: form.introEn } : {}),
-        ...(form.conclusionFr ? { conclusionFr: form.conclusionFr } : {}),
         ...(form.conclusionEn ? { conclusionEn: form.conclusionEn } : {}),
         ...(items ? { items } : {}),
         published: form.published,
@@ -181,10 +169,6 @@ export default function AdminPage() {
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
               <div>
-                <label style={{ fontSize: 12, color: '#888', display: 'block', marginBottom: 4 }}>Titre éditorial FR</label>
-                <input style={inp} value={form.titleFr} onChange={e => setForm(f => ({ ...f, titleFr: e.target.value }))} />
-              </div>
-              <div>
                 <label style={{ fontSize: 12, color: '#888', display: 'block', marginBottom: 4 }}>Editorial title EN</label>
                 <input style={inp} value={form.titleEn} onChange={e => setForm(f => ({ ...f, titleEn: e.target.value }))} />
               </div>
@@ -208,28 +192,16 @@ export default function AdminPage() {
               <input type="date" style={inp} value={form.weekOf} onChange={e => setForm(f => ({ ...f, weekOf: e.target.value }))} />
             </div>
             <div>
-              <label style={{ fontSize: 12, color: '#888', display: 'block', marginBottom: 4 }}>Éditorial FR *</label>
-              <textarea required rows={5} style={{ ...inp, resize: 'vertical' }} value={form.editorialFr} onChange={e => setForm(f => ({ ...f, editorialFr: e.target.value }))} />
-            </div>
-            <div>
               <label style={{ fontSize: 12, color: '#888', display: 'block', marginBottom: 4 }}>Editorial EN *</label>
               <textarea required rows={5} style={{ ...inp, resize: 'vertical' }} value={form.editorialEn} onChange={e => setForm(f => ({ ...f, editorialEn: e.target.value }))} />
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-              <div>
-                <label style={{ fontSize: 12, color: '#888', display: 'block', marginBottom: 4 }}>Introduction FR</label>
-                <textarea rows={4} style={{ ...inp, resize: 'vertical' }} value={form.introFr} onChange={e => setForm(f => ({ ...f, introFr: e.target.value }))} />
-              </div>
               <div>
                 <label style={{ fontSize: 12, color: '#888', display: 'block', marginBottom: 4 }}>Introduction EN</label>
                 <textarea rows={4} style={{ ...inp, resize: 'vertical' }} value={form.introEn} onChange={e => setForm(f => ({ ...f, introEn: e.target.value }))} />
               </div>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-              <div>
-                <label style={{ fontSize: 12, color: '#888', display: 'block', marginBottom: 4 }}>Conclusion FR</label>
-                <textarea rows={4} style={{ ...inp, resize: 'vertical' }} value={form.conclusionFr} onChange={e => setForm(f => ({ ...f, conclusionFr: e.target.value }))} />
-              </div>
               <div>
                 <label style={{ fontSize: 12, color: '#888', display: 'block', marginBottom: 4 }}>Conclusion EN</label>
                 <textarea rows={4} style={{ ...inp, resize: 'vertical' }} value={form.conclusionEn} onChange={e => setForm(f => ({ ...f, conclusionEn: e.target.value }))} />
@@ -289,7 +261,7 @@ export default function AdminPage() {
                   }}>
                     {a.published ? 'En ligne' : 'Brouillon'}
                   </span>
-                  <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>#{a.id} — {a.titleFr ?? a.title}</span>
+                  <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>#{a.id} — {a.titleEn ?? a.title}</span>
                 </div>
                 <div style={{ fontSize: 12, color: '#666' }}>
                   {new Date(a.createdAt).toLocaleDateString('fr-FR')} · {a.format ?? 'SIMPLE'} · {a.type ?? '—'}

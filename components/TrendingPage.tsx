@@ -11,14 +11,14 @@ import { useTrending } from '../hooks/useTrending';
 import { useBlog } from '../hooks/useBlog';
 import { useAppStore } from '../store';
 import { TMDB_IMAGE_BASE } from '../constants/config';
-import { articleExcerpt, articleTitle, heroItem } from '../utils/blog';
-import type { BlogArticle, ChartEvolutionPoint, TrendingItem } from '../types';
+import { articleExcerpt, articleTitle } from '../utils/blog';
+import type { BlogArticle, BlogArticleSummary, ChartEvolutionPoint, TrendingItem } from '../types';
 
 interface Props {
   type: 'movie' | 'tv';
   /** Contenu rendu par le serveur, pour que le HTML ne soit pas vide au crawl. */
   initialItems?: TrendingItem[];
-  initialArticles?: BlogArticle[];
+  initialArticles?: BlogArticleSummary[];
   /** Statistiques calculees sur nos propres releves, absentes des sources publiques. */
   evolution?: ChartEvolutionPoint[];
 }
@@ -35,9 +35,8 @@ export default function TrendingPage({ type, initialItems, initialArticles, evol
     if (filtered.length === 0) return null;
     return filtered[Math.floor(Math.random() * filtered.length)];
   }, [articles, type]);
-  const featuredHero = featuredArticle ? heroItem(featuredArticle) : undefined;
-  const featuredPoster = featuredHero?.posterPath ?? featuredArticle?.posterPath;
-  const featuredTitle = featuredArticle ? articleTitle(featuredArticle, isFr) : '';
+  const featuredPoster = featuredArticle?.posterPath;
+  const featuredTitle = featuredArticle ? articleTitle(featuredArticle) : '';
 
   const title      = type === 'movie' ? t('movies.title')       : t('series.title');
   const subtitle   = type === 'movie' ? t('movies.subtitle')    : t('series.subtitle');
@@ -80,7 +79,7 @@ export default function TrendingPage({ type, initialItems, initialArticles, evol
                   {featuredTitle}
                 </p>
                 <p style={{ color: '#888', fontSize: 12, margin: 0, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', lineHeight: 1.5 }}>
-                  {articleExcerpt(featuredArticle, isFr)}
+                  {articleExcerpt(featuredArticle)}
                 </p>
               </div>
             </div>

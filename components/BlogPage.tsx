@@ -7,6 +7,7 @@ import Header from './Header';
 import Footer from './Footer';
 import { useBlog } from '../hooks/useBlog';
 import { useAppStore } from '../store';
+import type { BlogArticleSummary } from '../types';
 import { TMDB_IMAGE_BASE } from '../constants/config';
 import { slugify } from '../utils/slug';
 import type { BlogArticle } from '../types';
@@ -18,16 +19,14 @@ function formatViews(n: number): string {
   return `${n}`;
 }
 
-function ArticleCard({ article, isFr, t }: { article: BlogArticle; isFr: boolean; t: (k: string) => string }) {
-  const title = articleTitle(article, isFr);
-  const primary = heroItem(article);
-  const posterPath = primary?.posterPath ?? article.posterPath;
+function ArticleCard({ article, isFr, t }: { article: BlogArticleSummary; isFr: boolean; t: (k: string) => string }) {
+  const title = articleTitle(article);
+  // La liste porte deja les champs de l element principal, a plat.
+  const posterPath = article.posterPath;
   const posterUrl = posterPath
     ? (posterPath.startsWith('http') ? posterPath : `${TMDB_IMAGE_BASE}${posterPath}`)
     : null;
-  const channelTitle = primary?.channelTitle ?? article.channelTitle;
-  const countryCount = primary?.countryCount ?? article.countryCount;
-  const articleType = primary?.type ?? article.type;
+  const { channelTitle, countryCount, type: articleType } = article;
 
   return (
     <div style={{ backgroundColor: '#141414', border: '1px solid #2A2A2A', borderRadius: 12, overflow: 'hidden', marginBottom: 32 }}>
@@ -92,7 +91,7 @@ function ArticleCard({ article, isFr, t }: { article: BlogArticle; isFr: boolean
 
       <div style={{ padding: '18px 24px 24px' }}>
         <p style={{ color: '#AAAAAA', fontSize: 14, lineHeight: 1.7, margin: 0, display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-          {articleExcerpt(article, isFr)}
+          {articleExcerpt(article)}
         </p>
         <Link href={`/blog/${slugify(title, article.id)}`} style={{ display: 'inline-block', marginTop: 12, color: '#FF5599', fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>
           {t('blog.read_more')} →
@@ -166,7 +165,7 @@ function FilterBar({
   );
 }
 
-export default function BlogPage({ initialArticles }: { initialArticles?: BlogArticle[] }) {
+export default function BlogPage({ initialArticles }: { initialArticles?: BlogArticleSummary[] }) {
   const { t } = useTranslation();
   const { lang } = useAppStore();
   const isFr = lang === 'fr';

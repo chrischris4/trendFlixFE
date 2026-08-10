@@ -1,43 +1,38 @@
-import type { BlogArticle, BlogArticleFormat, BlogArticleItem } from '../types';
+import type { BlogArticle, BlogArticleFormat, BlogArticleItem, BlogArticleSummary } from '../types';
 
-export function articleTitle(article: BlogArticle, isFr: boolean): string {
-  return (isFr ? article.titleFr : article.titleEn) || article.title;
+// Les articles n'existent plus qu'en anglais : c'est la version rendue cote
+// serveur, donc la seule indexee. Les parametres `isFr` sont conserves pour ne
+// pas casser les appelants, mais n'ont plus d'effet sur le texte de l'article.
+
+export function articleTitle(article: BlogArticle | BlogArticleSummary): string {
+  return article.titleEn || article.title;
 }
 
-export function articleIntro(article: BlogArticle, isFr: boolean): string {
-  return (isFr ? article.introFr : article.introEn)
-    || (isFr ? article.editorialFr : article.editorialEn);
+export function articleIntro(article: BlogArticle): string {
+  return article.introEn || article.editorialEn;
 }
 
-export function articleConclusion(article: BlogArticle, isFr: boolean): string {
-  return (isFr ? article.conclusionFr : article.conclusionEn) || '';
+export function articleConclusion(article: BlogArticle): string {
+  return article.conclusionEn || '';
 }
 
-export function articleExcerpt(article: BlogArticle, isFr: boolean): string {
-  return articleIntro(article, isFr);
+// L'extrait et le nombre de mots sont desormais calcules par le backend : la
+// liste ne transporte plus le texte integral, donc le front ne peut plus les
+// deduire lui-meme.
+export function articleExcerpt(article: BlogArticleSummary): string {
+  return article.excerpt;
 }
 
-// Compte le texte réellement rendu sur la page. Les formats structurés portent
-// leur contenu dans intro + sections + conclusion, pas dans `editorial`.
-export function articleWordCount(article: BlogArticle, isFr = false): number {
-  const count = (text?: string | null) => (text ?? '').trim().split(/\s+/).filter(Boolean).length;
-  const structured = [
-    isFr ? article.introFr : article.introEn,
-    isFr ? article.conclusionFr : article.conclusionEn,
-    ...(article.items ?? []).flatMap(item => [
-      isFr ? item.sectionTitleFr : item.sectionTitleEn,
-      isFr ? item.sectionTextFr : item.sectionTextEn,
-    ]),
-  ].reduce((total, part) => total + count(part), 0);
-  return Math.max(structured, count(isFr ? article.editorialFr : article.editorialEn));
+export function articleWordCount(article: BlogArticleSummary): number {
+  return article.wordCount;
 }
 
-export function itemSectionTitle(item: BlogArticleItem, isFr: boolean): string {
-  return (isFr ? item.sectionTitleFr : item.sectionTitleEn) || item.title;
+export function itemSectionTitle(item: BlogArticleItem): string {
+  return item.sectionTitleEn || item.title;
 }
 
-export function itemSectionText(item: BlogArticleItem, isFr: boolean): string {
-  return (isFr ? item.sectionTextFr : item.sectionTextEn) || '';
+export function itemSectionText(item: BlogArticleItem): string {
+  return item.sectionTextEn || '';
 }
 
 export function heroItem(article: BlogArticle): BlogArticleItem | undefined {

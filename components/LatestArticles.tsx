@@ -7,9 +7,9 @@ import { useAppStore } from '../store';
 import { TMDB_IMAGE_BASE } from '../constants/config';
 import { slugify } from '../utils/slug';
 import { articleExcerpt, articleTitle, heroItem } from '../utils/blog';
-import type { BlogArticle } from '../types';
+import type { BlogArticleSummary } from '../types';
 
-export default function LatestArticles({ limit = 3, initialArticles }: { limit?: number; initialArticles?: BlogArticle[] }) {
+export default function LatestArticles({ limit = 3, initialArticles }: { limit?: number; initialArticles?: BlogArticleSummary[] }) {
   const { i18n } = useTranslation();
   const { lang } = useAppStore();
   const isFr = lang === 'fr' || i18n.language === 'fr';
@@ -31,13 +31,12 @@ export default function LatestArticles({ limit = 3, initialArticles }: { limit?:
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 14 }}>
         {latest.map(a => {
-          const item = heroItem(a);
-          const posterPath = item?.posterPath ?? a.posterPath;
+          const posterPath = a.posterPath;
           const poster = posterPath
             ? (posterPath.startsWith('http') ? posterPath : `${TMDB_IMAGE_BASE}${posterPath}`)
             : null;
-          const title = articleTitle(a, isFr);
-          const excerpt = articleExcerpt(a, isFr);
+          const title = articleTitle(a);
+          const excerpt = articleExcerpt(a);
           return (
             <Link
               key={a.id}

@@ -1,4 +1,4 @@
-import type { TrendingItem, BlogArticle, StatsData, ItemHistory, ChartEvolutionPoint } from '../types';
+import type { TrendingItem, BlogArticle, BlogArticleSummary, StatsData, ItemHistory, ChartEvolutionPoint } from '../types';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 const TTL = 5 * 60 * 1000;
@@ -31,6 +31,11 @@ export async function fetchStats(): Promise<StatsData> {
   return apiFetch('/trending/stats');
 }
 
-export async function fetchBlogArticles(): Promise<BlogArticle[]> {
+export async function fetchBlogArticles(): Promise<BlogArticleSummary[]> {
   return apiFetch('/blog');
+}
+
+/** Texte integral d un article, servi uniquement sur sa propre page. */
+export async function fetchBlogArticle(id: number): Promise<BlogArticle> {
+  return apiFetch(`/blog/${id}`);
 }

@@ -17,14 +17,14 @@ import { useAppStore } from '../store';
 import { MOVIE_GENRES, TV_GENRES, TMDB_IMAGE_BASE } from '../constants/config';
 import { articleExcerpt, articleTitle, formatLabel, heroItem } from '../utils/blog';
 import { slugify } from '../utils/slug';
-import type { BlogArticle, TrendingItem } from '../types';
+import type { BlogArticle, BlogArticleSummary, TrendingItem } from '../types';
 
 type MediaType = 'movie' | 'tv';
 
 interface Props {
   initialItems: TrendingItem[];
   initialType: MediaType;
-  initialArticles: BlogArticle[];
+  initialArticles: BlogArticleSummary[];
 }
 
 export default function HomeContent({ initialItems, initialType, initialArticles }: Props) {
@@ -47,7 +47,7 @@ export default function HomeContent({ initialItems, initialType, initialArticles
     return [
       filtered.find(article => (article.format ?? 'SIMPLE') === 'SIMPLE'),
       filtered.find(article => (article.format ?? 'SIMPLE') !== 'SIMPLE'),
-    ].filter((article): article is BlogArticle => article !== undefined);
+    ].filter((article): article is BlogArticleSummary => article !== undefined);
   }, [articles, mediaType]);
 
   const filtered = useMemo(() => {
@@ -83,10 +83,10 @@ export default function HomeContent({ initialItems, initialType, initialArticles
           <div style={{ display: 'grid', gap: 8, marginBottom: 24 }}>
             {featuredArticles.map(article => {
               const structured = (article.format ?? 'SIMPLE') !== 'SIMPLE';
-              const title = articleTitle(article, isFr);
-              const hero = heroItem(article);
-              const poster = hero?.posterPath ?? article.posterPath;
-              const itemCount = article.items?.length ?? 0;
+              const title = articleTitle(article);
+              // La liste porte deja l affiche et le nombre d elements.
+              const poster = article.posterPath;
+              const itemCount = article.itemCount;
 
               return (
                 <a
@@ -132,7 +132,7 @@ export default function HomeContent({ initialItems, initialType, initialArticles
                         {title}
                       </p>
                       <p style={{ color: '#888', fontSize: 12, margin: 0, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', lineHeight: 1.5 }}>
-                        {articleExcerpt(article, isFr)}
+                        {articleExcerpt(article)}
                       </p>
                     </div>
                   </div>

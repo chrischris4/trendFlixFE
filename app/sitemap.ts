@@ -54,7 +54,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const blogRoutes: MetadataRoute.Sitemap = (await getBlogArticles())
     .filter(article => articleWordCount(article) >= 350)
     .map(a => ({
-      url: url(`/blog/${slugify(articleTitle(a, false), a.id)}`),
+      url: url(`/blog/${slugify(articleTitle(a), a.id)}`),
       lastModified: new Date(a.createdAt),
       changeFrequency: 'monthly' as const,
       priority: 0.7,

@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { fetchBlogArticles } from '../services/api';
-import type { BlogArticle } from '../types';
+import type { BlogArticleSummary } from '../types';
 
 // `initialArticles` vient du rendu serveur : les articles sont déjà dans le HTML,
 // on ne refait donc pas l'appel côté client.
-export function useBlog(initialArticles?: BlogArticle[]) {
+export function useBlog(initialArticles?: BlogArticleSummary[]) {
   const seeded = Boolean(initialArticles?.length);
-  const [articles, setArticles] = useState<BlogArticle[]>(initialArticles ?? []);
+  const [articles, setArticles] = useState<BlogArticleSummary[]>(initialArticles ?? []);
   const [loading, setLoading] = useState(!seeded);
   const [error, setError] = useState<string | null>(null);
 

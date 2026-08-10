@@ -1,12 +1,12 @@
 import { cache } from 'react';
-import { fetchBlogArticles, fetchTrending, fetchItemHistory, fetchEvolution } from './api';
-import type { BlogArticle, ChartEvolutionPoint, ItemHistory, TrendingItem } from '../types';
+import { fetchBlogArticles, fetchBlogArticle, fetchTrending, fetchItemHistory, fetchEvolution } from './api';
+import type { BlogArticle, BlogArticleSummary, ChartEvolutionPoint, ItemHistory, TrendingItem } from '../types';
 
 // Rendu serveur : le contenu doit être dans le HTML envoyé au crawler, pas
 // chargé après coup côté client. `cache()` déduplique l'appel entre
 // generateMetadata et le rendu de la page.
 
-export const getBlogArticles = cache(async (): Promise<BlogArticle[]> => {
+export const getBlogArticles = cache(async (): Promise<BlogArticleSummary[]> => {
   try {
     const articles = await fetchBlogArticles();
     return [...articles].sort(
@@ -15,6 +15,14 @@ export const getBlogArticles = cache(async (): Promise<BlogArticle[]> => {
   } catch {
     // API indisponible : la page se rabat sur le chargement client.
     return [];
+  }
+});
+
+export const getBlogArticle = cache(async (id: number): Promise<BlogArticle | null> => {
+  try {
+    return await fetchBlogArticle(id);
+  } catch {
+    return null;
   }
 });
 
