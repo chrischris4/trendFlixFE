@@ -1,6 +1,6 @@
 import { cache } from 'react';
-import { fetchBlogArticles, fetchTrending } from './api';
-import type { BlogArticle, TrendingItem } from '../types';
+import { fetchBlogArticles, fetchTrending, fetchItemHistory } from './api';
+import type { BlogArticle, ItemHistory, TrendingItem } from '../types';
 
 // Rendu serveur : le contenu doit être dans le HTML envoyé au crawler, pas
 // chargé après coup côté client. `cache()` déduplique l'appel entre
@@ -15,6 +15,15 @@ export const getBlogArticles = cache(async (): Promise<BlogArticle[]> => {
   } catch {
     // API indisponible : la page se rabat sur le chargement client.
     return [];
+  }
+});
+
+export const getItemHistory = cache(async (tmdbId: number): Promise<ItemHistory | null> => {
+  try {
+    return await fetchItemHistory(tmdbId);
+  } catch {
+    // Titre inconnu ou API indisponible : la fiche reste servie sans trajectoire.
+    return null;
   }
 });
 

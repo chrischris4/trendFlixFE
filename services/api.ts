@@ -1,4 +1,4 @@
-import type { TrendingItem, BlogArticle, StatsData } from '../types';
+import type { TrendingItem, BlogArticle, StatsData, ItemHistory } from '../types';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 const TTL = 5 * 60 * 1000;
@@ -12,6 +12,10 @@ async function apiFetch<T>(path: string): Promise<T> {
   const data = await res.json() as T;
   memCache.set(path, { data, ts: Date.now() });
   return data;
+}
+
+export async function fetchItemHistory(tmdbId: number): Promise<ItemHistory> {
+  return apiFetch(`/trending/history/${tmdbId}`);
 }
 
 export async function fetchTrending(type: 'movie' | 'tv' | 'all' = 'all', limit = 20): Promise<TrendingItem[]> {

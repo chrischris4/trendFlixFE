@@ -1,3 +1,28 @@
+/**
+ * Trajectoire d'un titre reconstituee a partir de nos releves successifs.
+ * TMDB expose une popularite instantanee : ni le pic, ni la retombee, ni la duree.
+ */
+export interface ItemHistory {
+  tmdbId: number;
+  type: 'movie' | 'tv';
+  title: string;
+  posterPath: string | null;
+  overview: string | null;
+  releaseDate: string | null;
+  originalLanguage: string | null;
+  voteAverage: number | null;
+  voteCount: number | null;
+  firstSeen: string;
+  lastSeen: string;
+  daysOnChart: number;
+  peakRank: { rank: number; day: string };
+  peakPopularity: { value: number; day: string };
+  currentPopularity: number;
+  /** Part de popularite perdue depuis le pic, en %. */
+  decayPct: number | null;
+  timeline: { day: string; rank: number; popularity: number | null }[];
+}
+
 export interface TrendingItem {
   id: string;
   tmdbId: number;
