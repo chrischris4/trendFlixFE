@@ -86,6 +86,12 @@ input, textarea, select { font-family: inherit; }
   .home-title { font-size: 38px; }
 }
 
+/* Le detail de l'insight alourdit trop le mobile : on n'y garde que le titre. */
+.insight-details { display: none; }
+@media (min-width: 768px) {
+  .insight-details { display: block; }
+}
+
 /* Portion mise en avant de l'accroche, teintee comme les accents du site. */
 .home-title-hl {
   background: linear-gradient(90deg, #C5001E, #E8006A);

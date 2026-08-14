@@ -76,12 +76,12 @@ export default function InsightBar({ items, type, genre = null }: Props) {
         Average rating across top {num(`${items.length}`)}: {num(stats.avgVote.toFixed(1))}/10.{' '}
         {stats.topLang && <>Dominant language: {num(stats.topLang[0].toUpperCase())} ({stats.topLang[1]} titles).</>}</>;
 
-  // Rappel de ce que contient la liste : volume, support, perimetre, genre filtre.
+  // Rappel de ce que contient la liste : volume, support, genre filtre. Pas de
+  // perimetre geographique, le site n'expose qu'un classement mondial.
   const titleSegments = [
     isFr
       ? `Top ${items.length} ${type === 'movie' ? 'films' : 'séries'}`
       : `Top ${items.length} ${type === 'movie' ? 'movies' : 'TV shows'}`,
-    isFr ? '🌍 Monde' : '🌍 Worldwide',
     genre ? genreLabel(genre, lang) : null,
   ].filter((segment): segment is string => Boolean(segment));
 
@@ -95,23 +95,26 @@ export default function InsightBar({ items, type, genre = null }: Props) {
           </span>
         ))}
       </h2>
-      <p style={{ color: '#888', fontSize: 13, marginBottom: 8, lineHeight: 1.6, fontStyle: 'italic' }}>
-        {editorial}
-      </p>
-      <p style={{ color: '#AAAAAA', fontSize: 13, lineHeight: 1.6, marginBottom: 10 }}>
-        {insightText}
-      </p>
-      {stats.topGenres.length > 0 && (
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          {stats.topGenres.map((g, i) => (
-            <div key={g.id} style={{ display: 'flex', alignItems: 'center', gap: 6, backgroundColor: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: 20, padding: '4px 12px' }}>
-              <span style={{ color: '#C5001E', fontWeight: 700, fontSize: 12 }}>#{i + 1}</span>
-              <span style={{ color: '#ddd', fontSize: 12, fontWeight: 600 }}>{g.def ? genreLabel(g.def, lang) : g.id}</span>
-              <span style={{ color: '#555', fontSize: 11 }}>{g.pct}%</span>
-            </div>
-          ))}
-        </div>
-      )}
+      {/* Trop dense en mobile : seul le titre de section y reste. */}
+      <div className="insight-details">
+        <p style={{ color: '#888', fontSize: 13, marginBottom: 8, lineHeight: 1.6, fontStyle: 'italic' }}>
+          {editorial}
+        </p>
+        <p style={{ color: '#AAAAAA', fontSize: 13, lineHeight: 1.6, marginBottom: 10 }}>
+          {insightText}
+        </p>
+        {stats.topGenres.length > 0 && (
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            {stats.topGenres.map((g, i) => (
+              <div key={g.id} style={{ display: 'flex', alignItems: 'center', gap: 6, backgroundColor: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: 20, padding: '4px 12px' }}>
+                <span style={{ color: '#C5001E', fontWeight: 700, fontSize: 12 }}>#{i + 1}</span>
+                <span style={{ color: '#ddd', fontSize: 12, fontWeight: 600 }}>{g.def ? genreLabel(g.def, lang) : g.id}</span>
+                <span style={{ color: '#555', fontSize: 11 }}>{g.pct}%</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
