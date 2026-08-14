@@ -21,6 +21,15 @@ import type { BlogArticle, BlogArticleSummary, TrendingItem } from '../types';
 
 type MediaType = 'movie' | 'tv';
 
+/** L'accroche marque entre crochets la portion a teinter en degrade. */
+function highlightTitle(text: string) {
+  const parts = text.split(/\[(.+?)\]/);
+  if (parts.length === 1) return text;
+  return parts.map((part, i) =>
+    i % 2 === 1 ? <span key={i} className="home-title-hl">{part}</span> : part,
+  );
+}
+
 interface Props {
   initialItems: TrendingItem[];
   initialType: MediaType;
@@ -68,7 +77,7 @@ export default function HomeContent({ initialItems, initialType, initialArticles
       {/* Ordre de la home : accroche, puis les deux articles mis en avant, puis l'insight du jour. */}
       {!loading && !error && items.length > 0 && (
         <div className="home-title-block">
-          <h1 className="home-title">{t('home.discover_title')}</h1>
+          <h1 className="home-title">{highlightTitle(t('home.discover_title'))}</h1>
         </div>
       )}
 

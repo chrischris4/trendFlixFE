@@ -16,7 +16,8 @@ const en = {
     contact: 'Contact',
   },
   home: {
-    discover_title: 'Discover the most popular movies and TV shows in the world right now',
+    // Les crochets marquent la portion teintee en degrade dans l'accroche.
+    discover_title: 'Discover the most popular [movies and TV shows] in the world right now',
     hero_title: 'Global trending',
     hero_subtitle: 'Movies & shows blowing up right now',
     trending_movies: 'Trending movies',

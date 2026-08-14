@@ -77,13 +77,21 @@ input, textarea, select { font-family: inherit; }
 
 .home-title {
   color: #fff;
-  font-size: 28px;
+  font-size: 30px;
   font-weight: 800;
   line-height: 1.25;
   text-align: center;
 }
 @media (min-width: 1024px) {
-  .home-title { font-size: 34px; }
+  .home-title { font-size: 38px; }
+}
+
+/* Portion mise en avant de l'accroche, teintee comme les accents du site. */
+.home-title-hl {
+  background: linear-gradient(90deg, #C5001E, #E8006A);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 /* Les deux articles mis en avant : empiles en mobile, cote a cote des la tablette. */

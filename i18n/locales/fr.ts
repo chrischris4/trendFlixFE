@@ -16,7 +16,8 @@ const fr = {
     contact: 'Contact',
   },
   home: {
-    discover_title: 'Découvrez les films et séries les plus populaires au monde en ce moment',
+    // Les crochets marquent la portion teintee en degrade dans l'accroche.
+    discover_title: 'Découvrez les [films et séries] les plus populaires au monde en ce moment',
     hero_title: 'Les tendances mondiales',
     hero_subtitle: 'Films & séries qui explosent en ce moment',
     trending_movies: 'Films tendance',
