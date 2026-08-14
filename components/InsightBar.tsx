@@ -8,6 +8,8 @@ import type { TrendingItem } from '../types';
 interface Props {
   items: TrendingItem[];
   type: 'movie' | 'tv';
+  /** Genre selectionne, pour que le titre decrive la liste affichee. */
+  genre?: { label: string; labelEn: string } | null;
 }
 
 const INSIGHTS: Record<'movie' | 'tv', { fr: string; en: string }> = {
@@ -21,7 +23,7 @@ const INSIGHTS: Record<'movie' | 'tv', { fr: string; en: string }> = {
   },
 };
 
-export default function InsightBar({ items, type }: Props) {
+export default function InsightBar({ items, type, genre = null }: Props) {
   const { i18n } = useTranslation();
   const isFr = i18n.language === 'fr';
   const lang = isFr ? 'fr' : 'en';
@@ -74,8 +76,25 @@ export default function InsightBar({ items, type }: Props) {
         Average rating across top {num(`${items.length}`)}: {num(stats.avgVote.toFixed(1))}/10.{' '}
         {stats.topLang && <>Dominant language: {num(stats.topLang[0].toUpperCase())} ({stats.topLang[1]} titles).</>}</>;
 
+  // Rappel de ce que contient la liste : volume, support, perimetre, genre filtre.
+  const titleSegments = [
+    isFr
+      ? `Top ${items.length} ${type === 'movie' ? 'films' : 'séries'}`
+      : `Top ${items.length} ${type === 'movie' ? 'movies' : 'TV shows'}`,
+    isFr ? '🌍 Monde' : '🌍 Worldwide',
+    genre ? genreLabel(genre, lang) : null,
+  ].filter((segment): segment is string => Boolean(segment));
+
   return (
     <div style={{ maxWidth: 1280, margin: '0 auto', padding: '14px 16px 12px' }}>
+      <h2 style={{ color: '#fff', fontSize: 17, fontWeight: 700, margin: '0 0 8px', lineHeight: 1.4 }}>
+        {titleSegments.map((segment, i) => (
+          <span key={segment}>
+            {i > 0 && <span style={{ color: '#555', fontWeight: 400, margin: '0 8px' }}>·</span>}
+            {segment}
+          </span>
+        ))}
+      </h2>
       <p style={{ color: '#888', fontSize: 13, marginBottom: 8, lineHeight: 1.6, fontStyle: 'italic' }}>
         {editorial}
       </p>
@@ -93,7 +112,6 @@ export default function InsightBar({ items, type }: Props) {
           ))}
         </div>
       )}
-      <div style={{ height: 1, background: 'linear-gradient(90deg, #C5001E, #E8006A)' }} />
     </div>
   );
 }
