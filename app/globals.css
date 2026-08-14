@@ -63,24 +63,50 @@ input, textarea, select { font-family: inherit; }
   .nav-mobile { display: none; }
 }
 
-.insight-bar { display: none; }
-@media (min-width: 1024px) {
-  .insight-bar { display: block; }
+/* Accroche : masquee en mobile pour laisser le classement remonter, et
+   largement aeree des la tablette. */
+.home-title-block { display: none; }
+@media (min-width: 768px) {
+  .home-title-block {
+    display: block;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 48px 16px 44px;
+  }
 }
 
-/* Accroche de la home : centree, et nettement plus grande sur desktop. */
 .home-title {
   color: #fff;
-  font-size: 20px;
+  font-size: 28px;
   font-weight: 800;
   line-height: 1.25;
   text-align: center;
 }
-@media (min-width: 768px) {
-  .home-title { font-size: 28px; }
-}
 @media (min-width: 1024px) {
   .home-title { font-size: 34px; }
+}
+
+/* Les deux articles mis en avant : empiles en mobile, cote a cote des la tablette. */
+.home-articles {
+  display: grid;
+  gap: 8px;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 16px 16px 0;
+}
+@media (min-width: 768px) {
+  .home-articles {
+    grid-template-columns: 1fr 1fr;
+    padding-top: 0;
+  }
+}
+
+/* Separe les articles du classement qui suit. */
+.home-divider {
+  grid-column: 1 / -1;
+  height: 1px;
+  margin-top: 28px;
+  background: linear-gradient(90deg, #C5001E, #E8006A);
 }
 
 .detail-poster { display: none; }

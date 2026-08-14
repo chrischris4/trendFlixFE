@@ -67,13 +67,13 @@ export default function HomeContent({ initialItems, initialType, initialArticles
 
       {/* Ordre de la home : accroche, puis les deux articles mis en avant, puis l'insight du jour. */}
       {!loading && !error && items.length > 0 && (
-        <div style={{ maxWidth: 900, margin: '0 auto', padding: '28px 16px 0' }}>
+        <div className="home-title-block">
           <h1 className="home-title">{t('home.discover_title')}</h1>
         </div>
       )}
 
       {featuredArticles.length > 0 && (
-        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '20px 16px 0', display: 'grid', gap: 8 }}>
+        <div className="home-articles">
           {featuredArticles.map(article => {
             const structured = (article.format ?? 'SIMPLE') !== 'SIMPLE';
             const title = articleTitle(article);
@@ -85,13 +85,14 @@ export default function HomeContent({ initialItems, initialType, initialArticles
               <a
                 key={article.id}
                 href={`/blog/${slugify(title, article.id)}`}
-                style={{ display: 'block', textDecoration: 'none' }}
+                style={{ display: 'block', textDecoration: 'none', height: '100%' }}
               >
                 <div
                   style={{
                     display: 'flex',
                     gap: 14,
                     alignItems: 'center',
+                    height: '100%',
                     backgroundColor: structured ? '#181113' : '#141414',
                     border: `1px solid ${structured ? '#4A1720' : '#2A2A2A'}`,
                     borderRadius: 12,
@@ -132,18 +133,15 @@ export default function HomeContent({ initialItems, initialType, initialArticles
               </a>
             );
           })}
-          {/* Separe les articles du classement qui suit. */}
-          <div style={{ height: 1, background: 'linear-gradient(90deg, #C5001E, #E8006A)', marginTop: 12 }} />
+          <div className="home-divider" />
         </div>
       )}
 
       {!loading && !error && items.length > 0 && (
-        <div className="insight-bar">
-          <InsightBar items={items} type={mediaType} genre={genreDef} />
-        </div>
+        <InsightBar items={items} type={mediaType} genre={genreDef} />
       )}
 
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '28px 16px 64px' }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '16px 16px 64px' }}>
         {error && <p style={{ color: '#C5001E', fontSize: 14, marginBottom: 20 }}>{error}</p>}
 
         {loading ? (

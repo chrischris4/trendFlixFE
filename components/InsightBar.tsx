@@ -86,7 +86,7 @@ export default function InsightBar({ items, type, genre = null }: Props) {
   ].filter((segment): segment is string => Boolean(segment));
 
   return (
-    <div style={{ maxWidth: 1280, margin: '0 auto', padding: '14px 16px 12px' }}>
+    <div style={{ maxWidth: 1280, margin: '0 auto', padding: '14px 16px 0' }}>
       <h2 style={{ color: '#fff', fontSize: 17, fontWeight: 700, margin: '0 0 8px', lineHeight: 1.4 }}>
         {titleSegments.map((segment, i) => (
           <span key={segment}>
@@ -102,7 +102,7 @@ export default function InsightBar({ items, type, genre = null }: Props) {
         {insightText}
       </p>
       {stats.topGenres.length > 0 && (
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 10 }}>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           {stats.topGenres.map((g, i) => (
             <div key={g.id} style={{ display: 'flex', alignItems: 'center', gap: 6, backgroundColor: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: 20, padding: '4px 12px' }}>
               <span style={{ color: '#C5001E', fontWeight: 700, fontSize: 12 }}>#{i + 1}</span>
