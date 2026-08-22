@@ -38,7 +38,7 @@ export default function LatestArticles({ limit = 3, initialArticles }: { limit?:
           const title = articleTitle(a);
           const excerpt = articleExcerpt(a);
           return (
-            <Link
+            <Link prefetch={false}
               key={a.id}
               href={`/blog/${slugify(title, a.id)}`}
               style={{ display: 'flex', gap: 12, backgroundColor: '#141414', border: '1px solid #2A2A2A', borderRadius: 12, padding: 12, textDecoration: 'none', transition: 'border-color 150ms' }}

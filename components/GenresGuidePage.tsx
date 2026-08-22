@@ -60,7 +60,7 @@ export default function GenresGuidePage() {
                     <h3 style={{ color: '#fff', fontSize: 16, fontWeight: 700, margin: 0 }}>{genreLabel(g, i18n.language)}</h3>
                   </div>
                   <p style={{ color: '#AAAAAA', fontSize: 14, lineHeight: 1.8, margin: '0 0 10px' }}>{g.text}</p>
-                  <Link href={`/${g.base}/genre/${g.slug}/`} style={{ fontSize: 13, fontWeight: 600, color: '#E8006A', textDecoration: 'none' }}>
+                  <Link prefetch={false} href={`/${g.base}/genre/${g.slug}/`} style={{ fontSize: 13, fontWeight: 600, color: '#E8006A', textDecoration: 'none' }}>
                     {isFr ? `Voir le top ${genreLabel(g, i18n.language)}` : `See the ${genreLabel(g, i18n.language)} top`} →
                   </Link>
                 </div>

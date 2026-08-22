@@ -216,7 +216,7 @@ export default function ArticlePage({ id, initialArticle, initialOthers = [] }: 
                   const otherTitle = articleTitle(a);
                   const otherPoster = a.posterPath;
                   return (
-                    <Link key={a.id} href={`/blog/${slugify(otherTitle, a.id)}`}
+                    <Link prefetch={false} key={a.id} href={`/blog/${slugify(otherTitle, a.id)}`}
                       style={{ display: 'flex', alignItems: 'center', gap: 12, backgroundColor: '#141414', border: '1px solid #2A2A2A', borderRadius: 10, padding: '10px 14px', textDecoration: 'none', transition: 'border-color 150ms' }}
                       onMouseEnter={e => (e.currentTarget.style.borderColor = '#C5001E')}
                       onMouseLeave={e => (e.currentTarget.style.borderColor = '#2A2A2A')}

@@ -112,7 +112,7 @@ export default function StatsPage() {
                         </>
                       );
                       return item.tmdbId ? (
-                        <Link key={item.title} href={`/${base}/${slugify(item.title, item.tmdbId)}`} style={cardStyle}
+                        <Link prefetch={false} key={item.title} href={`/${base}/${slugify(item.title, item.tmdbId)}`} style={cardStyle}
                           onMouseEnter={e => (e.currentTarget as HTMLElement).style.borderColor = '#444'}
                           onMouseLeave={e => (e.currentTarget as HTMLElement).style.borderColor = '#2A2A2A'}
                         >{inner}</Link>

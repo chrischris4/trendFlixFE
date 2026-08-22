@@ -18,7 +18,7 @@ export default function MovieCard({ item }: Props) {
     : `/series/${slugify(item.title, item.tmdbId)}`;
 
   return (
-    <Link href={href} style={{ display: 'block', textDecoration: 'none' }}>
+    <Link prefetch={false} href={href} style={{ display: 'block', textDecoration: 'none' }}>
     <div style={{ backgroundColor: '#141414', border: '1px solid #2A2A2A', borderRadius: 10, overflow: 'hidden', transition: 'border-color 160ms' }}
       onMouseEnter={e => (e.currentTarget as HTMLDivElement).style.borderColor = '#444'}
       onMouseLeave={e => (e.currentTarget as HTMLDivElement).style.borderColor = '#2A2A2A'}

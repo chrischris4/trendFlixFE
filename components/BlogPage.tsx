@@ -50,7 +50,7 @@ function ArticleCard({ article, isFr, t }: { article: BlogArticleSummary; isFr: 
           />
         )}
         <div style={{ flex: 1, minWidth: 0 }}>
-          <Link href={`/blog/${slugify(title, article.id)}`} style={{ textDecoration: 'none' }}>
+          <Link prefetch={false} href={`/blog/${slugify(title, article.id)}`} style={{ textDecoration: 'none' }}>
             <h2
               style={{ color: '#fff', fontSize: 17, fontWeight: 700, margin: '0 0 6px', lineHeight: 1.4, transition: 'color 150ms' }}
               onMouseEnter={e => (e.currentTarget.style.color = '#FF5599')}
@@ -93,7 +93,7 @@ function ArticleCard({ article, isFr, t }: { article: BlogArticleSummary; isFr: 
         <p style={{ color: '#AAAAAA', fontSize: 14, lineHeight: 1.7, margin: 0, display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
           {articleExcerpt(article)}
         </p>
-        <Link href={`/blog/${slugify(title, article.id)}`} style={{ display: 'inline-block', marginTop: 12, color: '#FF5599', fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>
+        <Link prefetch={false} href={`/blog/${slugify(title, article.id)}`} style={{ display: 'inline-block', marginTop: 12, color: '#FF5599', fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>
           {t('blog.read_more')} →
         </Link>
       </div>

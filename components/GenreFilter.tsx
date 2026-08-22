@@ -50,7 +50,7 @@ export default function GenreFilter({ mediaType, selected }: Props) {
       )}
       <HScrollWithArrows contentContainerStyle={contentStyle}>
         {others.map(g => (
-          <Link key={g.id} href={genreHref(g.slug)} style={chip} className="tab-hover">{genreLabel(g, i18n.language)}</Link>
+          <Link prefetch={false} key={g.id} href={genreHref(g.slug)} style={chip} className="tab-hover">{genreLabel(g, i18n.language)}</Link>
         ))}
       </HScrollWithArrows>
     </div>
